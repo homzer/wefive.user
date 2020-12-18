@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import userRouter from "./module/user";
-//import store from '../store'
-import transRouter from "./module/trans";
 import adminRouter from "./module/admin";
+import searchRouter from "./module/search";
 
 Vue.use(VueRouter);
 
@@ -11,7 +10,7 @@ const routes = [
     {
         path: '/',
         name: 'app',
-        component: () => import('../views/login/Login.vue')
+        component: () => import('../views/login/Init.vue')
     },
 
     {
@@ -24,29 +23,9 @@ const routes = [
       },*/
       component: () => import('../views/home/Home.vue')
     },
-    {
-        path: '/home',
-        name: 'SearchResult',
-        // 元信息
-        /*meta: {
-          // true 代表这个路由需要认证
-          auth: true,
-        },*/
-        component: () => import('../views/home/SearchResult.vue')
-    },
-    {
-        path: '/home',
-        name: 'SearchAll',
-        // 元信息
-        /*meta: {
-          // true 代表这个路由需要认证
-          auth: true,
-        },*/
-        component: () => import('../views/home/SearchAll.vue')
-    },
 
+    ...searchRouter,
     ...userRouter,
-    ...transRouter,
     ...adminRouter,
 ];
 

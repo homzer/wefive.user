@@ -8,7 +8,9 @@
           <v-text-field label="密码" id="password" value="" :rules="passwordRules"></v-text-field>
         </v-form>
       </div>
-      <button class="bbutton" @click="SendLoginInfo">登录</button>
+
+      <v-btn rounded color="cyan darken-2" width="50%" class="my-5" dark @click="SendLoginInfo">登录</v-btn>
+      <v-btn rounded color="cyan darken-2" width="50%" class="my-5" dark @click="back">返回</v-btn>
     </div>
   </div>
 </template>
@@ -29,11 +31,11 @@ export default {
       },
       phoneRules: [
         v => !!v || '电话号码不能为空',
-        v => v.length === 3 || '电话号码长度不对',
+        v => v.length === 11 || '电话号码长度不对',
       ],
       passwordRules: [
         v => !!v || '密码不能为空',
-        v => v.length > 1 || '密码长度不能小于6',
+        v => v.length > 6 || '密码长度不能小于6',
       ],
     }
   },
@@ -66,6 +68,9 @@ export default {
       }).catch((err) => {
         alert(err);
       })
+    },
+    back() {
+      this.$router.go(-1);
     },
   }
 

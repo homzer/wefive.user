@@ -1,18 +1,26 @@
 const userRouter = [
     {
-        path: '/login',
-        name: 'login',
-        component: () => import('../../views/login/Login.vue')
+        path: '/init',
+        name: 'init',
+        component: () => import('../../views/login/Init.vue')
     },
     {
-        path: '/login',
-        name: 'SignUp',
+        path: '/signUp',
+        name: 'signUp',
         component: () => import('../../views/login/SignUp.vue')
     },
     {
-        path: '/login',
-        name: 'SignIn',
+        path: '/signIn',
+        name: 'signIn',
         component: () => import('../../views/login/SignIn.vue')
+    },
+    {
+        path: '/userCenter',
+        name: 'userCenter',
+        /*meta: {
+            auth: true,
+        },*/
+        component: () => import('../../views/user/UserCenter.vue'),
     },
 ];
 

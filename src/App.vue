@@ -1,14 +1,52 @@
 <template>
   <v-app>
+    <v-card>
+      <v-toolbar flat color="cyan darken-2" dark>
 
-    <div v-if="this.$route.name!=='login' && this.$route.name!=='app'&&this.$route.name!=='SignIn'&& this.$route.name!=='SignUp'">
+        <v-spacer></v-spacer>
+        <v-toolbar-title>欢迎使用指尖武汉</v-toolbar-title>
+
+        <v-spacer></v-spacer>
+
+        <template v-slot:extension>
+          <v-tabs
+                  v-model="tabs"
+                  fixed-tabs
+                  background-color="cyan darken-2"
+          >
+            <v-tabs-slider color="cyan darken-2"></v-tabs-slider>
+            <v-tab
+                    :href="homeHref"
+            >
+              <v-icon>mdi-magnify</v-icon>
+              搜索
+            </v-tab>
+
+            <v-tab
+                    href="#tabs-2"
+            >
+              <v-icon>mdi-message</v-icon>
+              交流
+            </v-tab>
+
+            <v-tab
+                    :href="userHref"
+            >
+              <v-icon>mdi-account-box</v-icon>
+              我的
+            </v-tab>
+          </v-tabs>
+        </template>
+      </v-toolbar>
+    </v-card>
+    <!--<div v-if="this.$route.name!=='login' && this.$route.name!=='app'&&this.$route.name!=='SignIn'&& this.$route.name!=='SignUp'">
       <v-app-bar
               app
               clipped-right
               color="cyan darken-2"
               dark
       >
-        <!-- progress linear -->
+        &lt;!&ndash; progress linear &ndash;&gt;
         <v-progress-linear
                 id="progress-linear-2"
                 indeterminate
@@ -20,7 +58,7 @@
         <v-toolbar-title id="mainTitle" style="display: block;font-family: 楷体;font-size: x-large;">欢迎使用指尖武汉</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-app-bar>
-      <!-- right -->
+      &lt;!&ndash; right &ndash;&gt;
       <v-navigation-drawer
               v-model="drawerRight"
               app
@@ -66,15 +104,8 @@
 
         </v-list>
       </v-navigation-drawer>
-    </div>
+    </div>-->
     <v-main>
-      <!-- progress linear -->
-      <v-progress-linear
-              id="progress-linear"
-              indeterminate
-              color="cyan"
-              style="display: none"
-      ></v-progress-linear>
       <router-view/>
     </v-main>
   </v-app>
@@ -88,28 +119,18 @@ export default {
     source: String,
   },
   data: () => ({
-    drawer: null,
-    drawerRight: null,
-    drawerLeft: null,
-    right: false,
-    transDrawer: false,
+    tabs: null,
+    homeHref: "http://10.127.229.228:8001/home",
+    userHref: "http://10.127.229.228:8001/userCenter",
+
   }),
   components: {
 
   },
   methods: {
-    // 查看管理员列表
-    manageAdmin() {
-      // 跳转
-      this.$router.push({ name: 'admin' });
-    },
     //我的界面跳转
     My(){
       this.$router.replace({ name: 'trans' });
-    },
-    // 返回主页
-    returnHome() {
-      this.$router.replace({ name: 'home' });
     },
     // 登出
     logout() {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div onload="getSearchRecommend()">
     <v-img
         class="white--text align-end"
         height="200px"
@@ -21,7 +21,7 @@
               id="info"
           />
           <v-spacer></v-spacer>
-          <v-btn color="cyan darken-2" @click="add" dark style="max-height: 25px;">
+          <v-btn color="cyan darken-2" @click="toSearchResult" dark style="max-height: 25px;">
             查询
           </v-btn>
           <v-spacer></v-spacer>
@@ -51,75 +51,120 @@
     <br>
     <div>
       <h4>查询推荐：</h4>
-      <button @click="GoFind" style="color: grey;font-weight: bolder;font-size: small;">中华人民共和国国歌</button>
-      <button @click="GoFind" style="color: grey;font-weight: bolder;font-size: small;margin-left:30px">办理身份证需要什么材料</button>
-      <button @click="GoFind" style="color: grey;font-weight: bolder;font-size: small;margin-left:30px">结婚办理业务时间</button>
-      <button @click="GoFind" style="color: grey;font-weight: bolder;font-size: small;margin-left:30px">结婚证办理</button>
-      <button @click="GoFind" style="color: grey;font-weight: bolder;font-size: small;margin-left:30px">武汉市公安局地址和联系电话</button>
+      <button v-for="(item, index) in searchRecommend"
+              id="recommendation"
+              :key="index"
+              @click="GoFind"
+              style="color: grey;font-weight: bolder;font-size: small;">
+        {{item}}
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import seekService from "../../service/seekService";
+//import seekService from "../../service/seekService";
+import searchRecommendService from "../../service/searchRecommendService";
+import searchHistoryService from "../../service/searchHistoryService";
     export default {
-        name: "Home",
+      name: "Home",
       data () {
         return {
-          //userId:"4",
-          //createTime:"",
-          //active: false,
-          list: ["身份证", "警察局"],
+          list: [],
           inputValue: "",
+          searchRecommend: [""],
         }
       },
-      /*// 在vuex中获取状态
-        computed: {
-            userInfo() {
-                return this.$store.state.userModule.userInfo;
-            },
+
+      mounted: function() {
+            this.getSearchRecommend();
+            this.getSearchHistory();
         },
-      /!*  mounted: function() {
-            this.stopAnimation();
-        },*!/*/
       methods: {
-        GoFind(){
-          this.$router.push({name: 'SearchResult'});
+        //获得搜索推荐
+        getSearchRecommend(){
+          let date = new Date();
+          let year = date.getFullYear();
+          let month = date.getMonth()+1;
+          let day = date.getDate();
+          let time = year+'-'+month+'-'+day;
+          searchRecommendService.getSearchRecommend(time).then((res) => {
+            if (res.data.code !== 200) {
+              alert(res.data.msg);
+              return null;
+            }
+            this.searchRecommend = res.data.top;
+          }).catch((err) => {
+            alert(err);
+          });
         },
-        add: function () {
+
+        //获得搜索记录
+        getSearchHistory(){
+          let that = this;
+          searchHistoryService.getSearchHistory(that.$store.state.userModule.userInfo.userId).then((res) => {
+            if (res.data.code !== 200) {
+              alert(res.data.msg);
+              return null;
+            }
+            /*alert(res.data.history.length);*/
+            for(var i=0;i<res.data.history.length;i++){
+              that.list.push(res.data.history[i].info);
+            }
+          }).catch((err) => {
+            alert(err);
+          });
+        },
+
+        GoFind(){
+          let recommendation = document.getElementById("recommendation").value;
+          this.$router.push({name: 'searchDepartment', params: {'info': recommendation} });
+        },
+
+        toSearchResult() {
           if(this.inputValue===""){
             alert("您的输入为空！")
-            return
-          }else{
-            this.list.push(this.inputValue);
-            this.inputValue="";
-            let info = document.getElementById("info").value;
-            //this.$router.push({name: 'SearchAll'});
-            //未实现
-            let userId=this.$store.state.userModule.userInfo.userId;
-            var date = new Date();
-            var year = date.getFullYear();
-            var month = date.getMonth()+1;
-            var day = date.getDate();
-            var createTime = year+'-'+month+'-'+day;
-
-            seekService.getSeekInfo(info,userId,createTime).then((res) => {
-              if (res.data.code !== 200) {
-                alert(res.data.msg);
-                return null;
-              }
-              this.$router.push({name: 'SearchAll'});
-            }).catch((err) => {
-              alert(err);
-            })
+            return null;
           }
+          let info = document.getElementById("info").value;
+          this.$router.push({ name: 'searchDepartment', params: {'info': info} });
         },
+
+        /*add: function () {
+          if(this.inputValue===""){
+            alert("您的输入为空！")
+            return null;
+          }
+          this.list.push(this.inputValue);
+          this.inputValue="";
+          let info = document.getElementById("info").value;
+
+          let userId=this.$store.state.userModule.userInfo.userId;
+          let date = new Date();
+          let year = date.getFullYear();
+          let month = date.getMonth()+1;
+          let day = date.getDate();
+          let createTime = year+'-'+month+'-'+day;
+
+          seekService.getSeekInfo(info,userId,createTime).then((res) => {
+            if (res.data.code !== 200) {
+              alert(res.data.msg);
+              this.departments = res.data.departments;
+              return null;
+            }
+            this.$router.push({name: 'searchDepartment'});
+          }).catch((err) => {
+            alert(err);
+          });
+        },*/
+
         remove: function (index) {
           /*console.log("删除");*/
           /*console.log(index);*/
           //删除index的一个元素
           this.list.splice(index, 1);
         },
+
         clear: function () {
           this.list = [];
         }

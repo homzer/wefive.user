@@ -4,12 +4,14 @@
       <div class="btitle" >注册账户</div>
 
       <v-form v-model="valid">
-        <v-text-field label="用户名" value="" id="name" :rules="nameRules"></v-text-field>
-        <v-text-field label="电话号码" value="" id="phone" :rules="phoneRules"></v-text-field>
-        <v-text-field label="密码" id="password" value="" :rules="passwordRules"></v-text-field>
-        <v-text-field label="身份证号码" value="" id="cardId" :rules="cardIdRules"></v-text-field>
+        <v-text-field autocomplete="off" label="用户名" value="" id="name" :rules="nameRules"></v-text-field>
+        <v-text-field autocomplete="off" label="电话号码" value="" id="phone" :rules="phoneRules"></v-text-field>
+        <v-text-field autocomplete="off" label="密码" id="password" value="" :rules="passwordRules"></v-text-field>
+        <v-text-field autocomplete="off" label="身份证号码" value="" id="cardId" :rules="cardIdRules"></v-text-field>
       </v-form>
-      <button class="bbutton" @click="sendRegisterInfo()">注册</button>
+      <!--<button class="bbutton" @click="sendRegisterInfo()">注册</button>-->
+      <v-btn rounded color="cyan darken-2" width="50%" class="my-5" dark @click="sendRegisterInfo()">注册</v-btn>
+      <v-btn rounded color="cyan darken-2" width="50%" class="my-5" dark @click="back">返回</v-btn>
     </div>
   </div>
 </template>
@@ -58,6 +60,10 @@ export default {
         alert(err);
       })
     },
+
+    back() {
+      this.$router.go(-1);
+    }
   }
 }
 </script>
