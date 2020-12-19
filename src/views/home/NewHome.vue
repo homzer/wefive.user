@@ -409,7 +409,7 @@
                 this.$router.push({ name: 'searchResult' });
             },
             toDepartment() {
-
+                this.$router.push({ name: 'process' });
             }
         }
     }
