@@ -16,12 +16,14 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-                    color="white"
+                    color="cyan darken-2"
                     class="py-5 pr-13 pl-13 mt-8"
                     id="SignInBtn"
                     style="position: relative; bottom: -15px; height: 50px;"
                     @click="thirdPartyAuth()"
-                    text
+                    dark
+                    width="300"
+                    max-width="300"
             >
                 登录
             </v-btn>
@@ -31,12 +33,13 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-                    color="white"
-                    class="py-5 pr-13 pl-13 mt-8"
+                    color="cyan darken-2"
                     id="signUpBtn"
                     style="position: relative; top: 25px; height: 50px"
                     @click="thirdPartyAuth1()"
-                    text
+                    dark
+                    width="300"
+                    max-width="300"
             >
                 注册
             </v-btn>
@@ -84,7 +87,6 @@
         color: white;
         border: 0;
         border-radius: 20px;
-        background-color: #4eff82;
     }
 
     .background{

@@ -65,12 +65,12 @@
     methods: {
       SendLoginInfo() {
         if(!this.valid) {
-          return null;
+          return;
         }
 
         let phone = document.getElementById("phone").value;
         let password = document.getElementById("password").value;
-        var that = this;
+        let that = this;
         loginService.sendLoginInfo(phone, password).then((res) => {
           if (res.data.code !== 200) {
             alert(res.data.msg);
@@ -87,7 +87,7 @@
           let user = that.user;
           // 本地储存用户信息和Token
           this.$store.dispatch('userModule/storeUserInfo', {user, token});
-          this.$router.push({ name: 'home' });
+          this.$router.push({ name: 'newHome' });
         }).catch((err) => {
           alert(err);
         })
