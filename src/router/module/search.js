@@ -1,5 +1,3 @@
-
-
 const searchRouter = [
     {
         path: '/searchMaterial/:busId',
@@ -9,7 +7,7 @@ const searchRouter = [
           // true 代表这个路由需要认证
           auth: true,
         },*/
-        component: () => import('../../views/home/SearchMaterial.vue')
+        component: () => import('../../views/search/SearchMaterial.vue')
     },
     {
         path: '/SearchDepartment/:info',
@@ -19,7 +17,7 @@ const searchRouter = [
           // true 代表这个路由需要认证
           auth: true,
         },*/
-        component: () => import('../../views/home/SearchDepartment.vue')
+        component: () => import('../../views/search/SearchDepartment.vue')
     },
     {
         path: '/searchBusiness/:deptId',
@@ -29,7 +27,17 @@ const searchRouter = [
           // true 代表这个路由需要认证
           auth: true,
         },*/
-        component: () => import('../../views/home/SearchBusiness.vue')
+        component: () => import('../../views/search/SearchBusiness.vue')
+    },
+    {
+        path: '/searchResult',
+        name: 'searchResult',
+        // 元信息
+        /*meta: {
+          // true 代表这个路由需要认证
+          auth: true,
+        },*/
+        component: () => import('../../views/search/SearchResult.vue')
     },
 ];
 

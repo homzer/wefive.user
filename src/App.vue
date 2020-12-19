@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-card>
+    <!--<v-card>
       <v-toolbar flat color="cyan darken-2" dark>
 
         <v-spacer></v-spacer>
@@ -38,73 +38,7 @@
           </v-tabs>
         </template>
       </v-toolbar>
-    </v-card>
-    <!--<div v-if="this.$route.name!=='login' && this.$route.name!=='app'&&this.$route.name!=='SignIn'&& this.$route.name!=='SignUp'">
-      <v-app-bar
-              app
-              clipped-right
-              color="cyan darken-2"
-              dark
-      >
-        &lt;!&ndash; progress linear &ndash;&gt;
-        <v-progress-linear
-                id="progress-linear-2"
-                indeterminate
-                color="cyan"
-                style="display: none"
-        ></v-progress-linear>
-        <v-app-bar-nav-icon @click.stop="drawerRight=!drawerRight"></v-app-bar-nav-icon>
-        <v-spacer></v-spacer>
-        <v-toolbar-title id="mainTitle" style="display: block;font-family: 楷体;font-size: x-large;">欢迎使用指尖武汉</v-toolbar-title>
-        <v-spacer></v-spacer>
-      </v-app-bar>
-      &lt;!&ndash; right &ndash;&gt;
-      <v-navigation-drawer
-              v-model="drawerRight"
-              app
-              clipped
-              left
-      >
-        <v-list dense>
-          <v-list-item @click.stop="returnHome">
-            <v-list-item-action>
-              <v-icon>mdi-exit-to-app</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>首页</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item @click.stop="manageAdmin">
-            <v-list-item-action>
-              <v-icon>mdi-exit-to-app</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>部门评价</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item @click.stop="My">
-            <v-list-item-action>
-              <v-icon>mdi-exit-to-app</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>我的</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item @click.stop="logout">
-            <v-list-item-action>
-              <v-icon>mdi-exit-to-app</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>退出</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-        </v-list>
-      </v-navigation-drawer>
-    </div>-->
+    </v-card>-->
     <v-main>
       <router-view/>
     </v-main>
