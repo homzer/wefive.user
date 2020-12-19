@@ -6,12 +6,12 @@ const userRouter = [
     },
     {
         path: '/signUp',
-        name: 'signUp',
+        name: 'SignUp',
         component: () => import('../../views/login/SignUp.vue')
     },
     {
         path: '/signIn',
-        name: 'signIn',
+        name: 'SignIn',
         component: () => import('../../views/login/SignIn.vue')
     },
     {

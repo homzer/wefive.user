@@ -12,16 +12,16 @@
     <div class="header">
       <div class="mt-1">
         <v-row>
-          <input
-              v-model="inputValue"
-              autofocus="autofocus"
-              autocomplete="off"
-              placeholder="请输入搜索内容"
-              class="new-todo ml-3"
-              id="info"
+          <label for="info"></label><input
+                  v-model="inputValue"
+                  autofocus="autofocus"
+                  autocomplete="off"
+                  placeholder="请输入搜索内容"
+                  class="new-todo ml-3"
+                  id="info"
           />
           <v-spacer></v-spacer>
-          <v-btn color="cyan darken-2" @click="toSearchResult" dark style="max-height: 25px;">
+          <v-btn id="btn1" @click="toSearchResult">
             查询
           </v-btn>
           <v-spacer></v-spacer>
@@ -173,111 +173,134 @@ import searchHistoryService from "../../service/searchHistoryService";
 </script>
 
 <style scoped>
-/*input框*/
-.new-todo{
-  width: 210px;
-  height: 25px;
-  background: none;
-  border: 1px solid #190e09;
-}
 
-button {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-  font-size: 120%;
-  vertical-align: baseline;
-  font-family: inherit;
-  font-weight: inherit;
-  color: inherit;
-}
+  /*input框*/
 
-.todo-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-height: 420px;
-  overflow: auto;
-}
+  .new-todo{
+    width: 210px;
+    height: 25px;
+    background: none;
+    border: 1px solid #190e09;
+  }
 
-.todo-list li {
-  position: relative;
-  font-size: 15px;
-  border-bottom: 1px solid #ededed;
-  height: 25px;
-  box-sizing: border-box;
-}
+  button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 120%;
+    vertical-align: baseline;
+    font-family: inherit;
+    font-weight: inherit;
+    color: inherit;
+  }
 
-.todo-list li:last-child {
-  border-bottom: none;
-}
+  .todo-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: 420px;
+    overflow: auto;
+  }
 
-.todo-list li .destroy {
-  /*display: none;*/
-  position: absolute;
-  top: 0;
-  right: 10px;
-  bottom: 0;
-  width: 30px;
-  height: 30px;
-  margin: auto 0;
-  font-size: 15px;
-  color: #cc9a9a;
-  margin-bottom: 1px;
-  transition: color 0.2s ease-out;
-}
+  .todo-list li {
+    position: relative;
+    font-size: 15px;
+    border-bottom: 1px solid #ededed;
+    height: 25px;
+    box-sizing: border-box;
+  }
 
-.todo-list li .destroy:hover {
-  /*color: #af5b5e;*/
-}
+  .todo-list li:last-child {
+    border-bottom: none;
+  }
 
-.todo-list li .destroy:after {
-  content: "x";
-}
+  .todo-list li .destroy {
+    /*display: none;*/
+    position: absolute;
+    top: 0;
+    right: 10px;
+    bottom: 0;
+    width: 30px;
+    height: 30px;
+    margin: auto 0;
+    font-size: 15px;
+    color: #cc9a9a;
+    margin-bottom: 1px;
+    transition: color 0.2s ease-out;
+  }
 
-.todo-list li:hover .destroy {
-  display: block;
-}
-.footer {
-  color: #777;
-  padding: 10px 15px;
-  height: 12px;
-  text-align: center;
-  border-top: 1px solid #e6e6e6;
-}
+  .todo-list li .destroy:hover {
+    /*color: #af5b5e;*/
+  }
 
-.footer:before {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 50px;
-  overflow: hidden;
-}
+  .todo-list li .destroy:after {
+    content: "x";
+  }
 
-.todo-count {
-  float: left;
-  text-align: left;
-}
+  .todo-list li:hover .destroy {
+    display: block;
+  }
+  .footer {
+    color: #777;
+    padding: 10px 15px;
+    height: 12px;
+    text-align: center;
+    border-top: 1px solid #e6e6e6;
+  }
 
-.todo-count strong {
-  font-weight: 300;
-}
+  .footer:before {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 50px;
+    overflow: hidden;
+  }
 
-.clear-completed,
-html .clear-completed:active {
-  float: right;
-  position: relative;
-  line-height: 20px;
-  text-decoration: none;
-  cursor: pointer;
-  font-size: 15px;
-}
+  .todo-count {
+    float: left;
+    text-align: left;
+  }
 
-.clear-completed:hover {
-  text-decoration: underline;
-}
+  .todo-count strong {
+    font-weight: 300;
+  }
+
+  .clear-completed,
+  html .clear-completed:active {
+    float: right;
+    position: relative;
+    line-height: 20px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .clear-completed:hover {
+    text-decoration: underline;
+  }
+
+  #info{
+    position: relative;
+    left: 10px;
+    width: 250px;
+    height: 42px;
+    border-radius: 10px 0 0 10px;
+    border: 2px solid #c4c7ce;
+  }
+  #btn1{
+    width: 108px;
+    height: 42px;
+    right: 5px;
+    padding: 0;
+    background-color: #4e6ef2;
+    border-radius: 0 10px 10px 0;
+    font-size: 17px;
+    color: #fff;
+    font-weight: 400;
+    outline: 0;
+  }
 
 </style>

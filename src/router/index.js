@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import userRouter from "./module/user";
-import adminRouter from "./module/admin";
 import searchRouter from "./module/search";
+import processRouter from "./module/process";
+import commentRouter from "./module/comment";
 
 Vue.use(VueRouter);
 
@@ -23,10 +24,21 @@ const routes = [
       },*/
       component: () => import('../views/home/Home.vue')
     },
+    {
+        path: '/newHome',
+        name: 'newHome',
+        // 元信息
+        /*meta: {
+          // true 代表这个路由需要认证
+          auth: true,
+        },*/
+        component: () => import('../views/home/NewHome.vue')
+    },
 
     ...searchRouter,
     ...userRouter,
-    ...adminRouter,
+    ...processRouter,
+    ...commentRouter,
 ];
 
 const router = new VueRouter({
