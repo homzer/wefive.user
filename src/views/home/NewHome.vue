@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container onload="loadHotBusiness()">
         <v-row justify="center">
             <v-card max-width="500" min-width="400">
 
@@ -96,11 +96,13 @@
                                     >
                                         <v-spacer></v-spacer>
 
-                                        <v-toolbar-title>热搜部门</v-toolbar-title>
+                                        <v-toolbar-title>热搜部门和业务</v-toolbar-title>
 
                                         <v-spacer></v-spacer>
                                         <v-btn
-                                                color="cyan darken-2"
+                                                color="white"
+                                                dark
+                                                text
                                                 fab
                                                 absolute
                                                 right
@@ -111,20 +113,21 @@
 
                                     <v-row dense>
                                         <v-col
-                                                v-for="(item, i) in departments"
+                                                v-for="(item, i) in businesses"
                                                 :key="i"
                                                 cols="12"
                                         >
-                                            <v-card flat :id="item.dept_id" @click="toDepartment">
+                                            <v-card flat :id="item.dept_id">
                                                 <div class="d-flex flex-no-wrap justify-space-between">
                                                     <div>
                                                         <v-card-title
-                                                                v-text="item.dept_name"
+                                                                v-text="item.dept_name + '(' + item.bus_name + ')'"
                                                         ></v-card-title>
                                                         <v-card-subtitle v-text="item.location"></v-card-subtitle>
+
                                                         <v-card-text >
                                                             <div><v-icon small>mdi-clock</v-icon>{{item.work_time}}</div>
-                                                            <div><v-icon small>mdi-phone</v-icon>{{item.description}}</div>
+                                                            <div><v-icon small>mdi-phone</v-icon>{{item.phone}}</div>
                                                         </v-card-text>
                                                     </div>
 
@@ -137,7 +140,36 @@
                                                         <v-img :src="item.picture"></v-img>
                                                     </v-avatar>
                                                 </div>
+
+                                                <v-card-actions>
+                                                    <v-btn
+                                                            icon
+                                                            @click=" showDetail === i ? showDetail = -1 : showDetail = i "
+                                                    >
+                                                        <v-icon>{{ showDetail === i ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                                                    </v-btn>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="cyan darken-2"
+                                                        @click="toBusProcess"
+                                                        large
+                                                        dark
+                                                        width="180"
+                                                        :id="item.bus_id"
+                                                    >
+                                                        办理详情
+                                                    </v-btn>
+                                                </v-card-actions>
+                                                <v-expand-transition>
+                                                    <div v-show="showDetail === i">
+                                                        <v-divider></v-divider>
+                                                        <v-card-text>
+                                                            <div v-text="item.description"></div>
+                                                        </v-card-text>
+                                                    </div>
+                                                </v-expand-transition>
                                             </v-card>
+
                                             <v-divider
                                                     v-if="i < comments.length - 1"
                                                     :key="i"
@@ -298,7 +330,126 @@
                     <!-- 我的主界面 -->
                     <v-tab-item value="tabs-3">
                         <v-card flat>
-                            <v-card-text></v-card-text>
+                            <template>
+                                <div v-if="flag === 1">
+                                    <div class="usercenter">
+                                        <div class="user-style">
+                                            <div class="userimg-style" >
+                                                <img v-bind:src="'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=201340457,3408503524&fm=26&gp=0.jpg'"/>
+                                            </div>
+                                            <div class="username-plus">
+                                                <span>{{user.name1}}</span>
+                                            </div>
+                                            <div class="btn-update">
+                                                <span v-on:click="flag = 2">修改</span>
+                                            </div>
+                                        </div>
+
+                                        <template>
+                                            <v-container fluid>
+                                                <v-row>
+
+                                                    <v-col
+                                                            :cols="12"
+                                                    >
+                                                        <v-card>
+                                                            <v-img
+                                                                    :src="'https://i.loli.net/2020/12/20/iZsuaYNU4cJd8C5.png'"
+                                                                    class="white--text align-end"
+                                                                    height="200px"
+                                                            >
+                                                            </v-img>
+                                                        </v-card>
+                                                    </v-col>
+
+                                                    <v-col
+                                                            :cols="12"
+                                                    >
+                                                        <v-card class="card">
+                                                            <span class="tit">
+                                                                我的信息
+                                                            </span>
+                                                            <v-btn style="background-image: url('https://i.loli.net/2020/12/20/6CtLiIsGcjWkVgh.png');
+                          height: 45px; float: right; width: 10px"
+                                                                   @click="showInformation">
+                                                            </v-btn>
+                                                        </v-card>
+                                                    </v-col>
+
+
+                                                    <div class="mymess" v-show="flag2">
+                                                        <i class="fa fa-phone" aria-hidden="true"></i>
+                                                        &nbsp;&nbsp;电话<span>{{user.tel1}}</span>
+                                                    </div>
+                                                    <div class="mymess" v-show="flag2">
+                                                        <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                                                        &nbsp;&nbsp;身份证<span id="ID">{{user.cardId1}}</span>
+                                                    </div>
+
+
+                                                    <v-col
+                                                            :cols="12"
+                                                    >
+                                                        <v-card class="card">
+                                                            <span class="tit">
+                                                                我的足迹
+                                                            </span>
+                                                            <v-btn style="background-image: url('https://i.loli.net/2020/12/20/6CtLiIsGcjWkVgh.png');
+                          height: 45px; float: right; width: 10px"
+                                                            >
+                                                            </v-btn>
+                                                        </v-card>
+                                                    </v-col>
+                                                    <v-col
+                                                            :cols="12"
+                                                    >
+                                                        <v-card class="card">
+                  <span class="tit">
+                    我的收藏
+                  </span>
+                                                            <v-btn style="background-image: url('https://i.loli.net/2020/12/20/6CtLiIsGcjWkVgh.png');
+                          height: 45px; float: right; width: 10px"
+                                                            >
+                                                            </v-btn>
+                                                        </v-card>
+                                                    </v-col>
+
+                                                </v-row>
+                                            </v-container>
+                                        </template>
+                                    </div>
+                                </div>
+
+
+                                <div v-else-if="flag === 2" class="form">
+                                    <div class="usercenter">
+                                        <div class="user-style">
+                                            <div class="userimg-style"><img v-bind:src="'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=201340457,3408503524&fm=26&gp=0.jpg' + user.icon"/></div>
+                                            <div class="username-plus"><span>{{user.name1}}</span></div>
+                                            <div class="btn-update"><span v-on:click="flag = 1">取消</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="input-control" style="margin-top:50px">
+                                        <input id="name" type="text" name="username" v-model="user.name1" placeholder="昵称"/>
+                                    </div>
+                                    <div class="input-control">
+                                        <input id="password" type="text" name="username" v-model="user.password1" placeholder="请输入新的密码" />
+                                    </div>
+                                    <div class="input-control">
+                                        <input id="phone" type="text" name="username" v-model="user.tel1" placeholder="电话" />
+                                    </div>
+                                    <div class="input-control">
+                                        <input id="cardId" type="text" name="username" v-model="user.cardId1" placeholder="身份证号" />
+                                    </div>
+                                    <div class="button-control">
+                                        <input type="button" name="submit" value="提交" v-on:click="submit"/>
+                                    </div>
+
+
+
+                                </div>
+
+                            </template>
                         </v-card>
                     </v-tab-item>
                 </v-tabs-items>
@@ -310,11 +461,16 @@
 </template>
 
 <script>
+    import businessService from "../../service/businessService";
+    import myInformationService from "../../service/myInformationService";
+
     export default {
         name: "NewHome",
         data () {
             return {
+                /* 搜索主页 */
                 inputValue: "",
+                showDetail: false,
                 tabs: "tabs-1",
                 like: false,
                 hotSearch: [
@@ -331,41 +487,62 @@
                         headline: '我想买车要办里什么证件吗',
                     },
                 ],
-                departments: [
+                businesses: [
                     {
-                        description: '18088012342',
+                        phone: '18088012342',
                         work_time: '上午8:30-12:00；下午2:30-5:30',
                         dept_id: "",
                         picture: 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2723534203,3190979793&fm=26&gp=0.jpg',
                         dept_name: '洪山区市政府',
                         location: '武汉市集贤路特1号华通花园2号楼',
+
+                        bus_id: '',
+                        bus_name: '办理身份证',
+                        description: '年满16周岁的中国公民,应当向常住户口所在地的户口登记机关履行申领居民身份证手续。',
+                        cost: '20',
                     },
                     {
-                        description: '18088012342',
+                        phone: '18088012342',
                         work_time: '上午8:30-12:00；下午2:30-5:30',
                         dept_id: "",
                         picture: 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2873493749,1373290045&fm=26&gp=0.jpg',
                         dept_name: '青山区民政局',
                         location: '武汉市青山区临江大道868号',
+
+                        bus_id: '',
+                        bus_name: '办理房产证',
+                        description: '购房者应要求销售单位出示该项目的《国有土地使用证》、《建设用地规划许可证》',
+                        cost: '0',
                     },
                     {
-                        description: '18088012342 15546399342',
+                        phone: '18088012342 15546399342',
                         work_time: '上午8:30-12:00；下午2:30-5:30',
                         dept_id: "",
                         picture: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2537935077,2996162810&fm=26&gp=0.jpg',
                         dept_name: '东湖新技术开发区管委会社会发展局',
                         location: '黄陂区前川街百秀街183号',
+
+                        bus_id: '',
+                        bus_name: '办理结婚证',
+                        description: '结婚年龄:男年满22周岁.女年满20周岁',
+                        cost: '50',
                     },
                     {
-                        description: '18088012342 15546399342',
+                        phone: '18088012342 15546399342',
                         work_time: '上午8:30-12:00；下午2:30-5:30',
                         dept_id: "",
                         picture: '',
                         dept_name: '洪山区市政府与东湖新技术开发区管委会社会发展局',
                         location: '武汉市集贤路特1号华通花园2号楼',
+
+                        bus_id: '',
+                        bus_name: '办理营业执照',
+                        description: '办理营业执照所需时间 材料齐全并审查通过后,办理营业执照需5个工作日,外资企业办理营业执照需10个工作日。',
+                        cost: '20',
                     },
                 ],
 
+                /* 评论交流 */
                 comments: [
                     {
                         likes: "123",
@@ -398,26 +575,106 @@
                         content: '如果到了合适的年龄,是可以去户口所在地的派出所办理身份证的。那么,您知道怎么正确办理身份证吗?到户口所在地的派出所申请领取第二代居民身份证时，应该提前准备好相应的证件，一般只需要准备好户口本就行了，到了派出所后工作人员会根据情况帮忙进行办理。',
                     },
                 ],
+
+                /* 我的信息 */
+                flag: 1,
+                flag2:false,
+                user: {
+                    name1: '',
+                    password1: '',
+                    tel1: '',
+                    cardId1: ''
+                },
+                users: {
+                    name1: '',
+                    password1: '',
+                    tel1: '',
+                    cardId1: ''
+                },
             }
         },
-
+        mounted: function() {
+            this.loadHotBusiness();
+        },
         methods: {
+            // 获取热门业务
+            loadHotBusiness() {
+                businessService.getHotBusiness().then((res) => {
+                    if (res.data.code !== 200) {
+                        alert(res.data.msg);
+                    } else {
+                        this.businesses = res.data.data.businesses;
+                    }
+                }).catch((err) => {
+                    alert(err);
+                });
+            },
+
             toComment() {
                 this.$router.push({ name: 'comment' });
             },
             toSearchResult() {
                 this.$router.push({ name: 'searchResult' });
             },
-            toDepartment() {
-                this.$router.push({ name: 'process' });
+            toBusProcess(event) {
+                let busId = event.currentTarget.id;
+                this.$router.push({ name: 'process' , params: {'busId': busId}});
+            },
+
+            submit:function () {
+                let phone = document.getElementById("phone").value;
+                let password = document.getElementById("password").value;
+                let name = document.getElementById("name").value;
+                let cardId = document.getElementById("cardId").value;
+                if(password===""){
+                    alert("密码不能为空！");
+                    return;
+                }
+                let that = this;
+                myInformationService.sendMyInformation(that.$store.state.userModule.userInfo.userId,name,
+                    phone,cardId,password).then((res) => {
+                    if (res.data.code !== 200) {
+                        alert(res.data.msg);
+                        return null;
+                    }
+                    that.user.name1 = name;
+                    that.user.tel1 = phone;
+                    that.user.password1 = password;
+                    that.user.cardId1 = cardId;
+                    that.flag = 1;
+                    alert("修改成功！")
+                }).catch((err) => {
+                    alert(err);
+                })
+            },
+            getInformation:function () {
+                let that = this;
+                myInformationService.getMyInformation(this.$store.state.userModule.userInfo.userId).then((res) => {
+                    if (res.data.code !== 200) {
+                        alert(res.data.msg);
+                        return null;
+                    }
+                    that.user.name1 = res.data.users.name;
+                    that.user.tel1 = res.data.users.phone;
+                    that.user.password1 = "";
+                    that.user.cardId1 = res.data.users.cardId;
+
+                    console.log(this.user);
+                }).catch((err) => {
+                    alert(err);
+                })
+            },
+
+            showInformation(){
+                this.flag2 = !this.flag2;
             }
         }
     }
 </script>
 
 <style scoped>
+    @import '../../../static/css/mymess.css'; /*input框*/
 
-    /*input框*/
     #info{
         position: relative;
         left: 5px;
@@ -437,6 +694,18 @@
         color: #fff;
         font-weight: 400;
         outline: 0;
+    }
+
+    .mymess{
+        margin-top: 10px;
+        margin-left: 18px;
+    }
+
+    .card{
+        margin-top: 20px;
+        height: 45px;
+        font-size: 25px;
+        background-color: #777777;
     }
 
 </style>
