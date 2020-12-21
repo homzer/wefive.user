@@ -1,6 +1,6 @@
 const processRouter = [
     {
-        path: '/process',
+        path: '/process/busId=:busId',
         name: 'process',
         // 元信息
         /*meta: {
