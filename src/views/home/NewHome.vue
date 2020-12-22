@@ -88,7 +88,6 @@
                                         width="100%"
                                         class="mx-auto"
                                 >
-
                                     <v-app-bar
                                             dark
                                             color="cyan darken-2"
@@ -125,9 +124,8 @@
                                                         ></v-card-title>
                                                         <v-card-subtitle v-text="item.location"></v-card-subtitle>
 
-                                                        <v-card-text >
-                                                            <div><v-icon small>mdi-clock</v-icon>{{item.work_time}}</div>
-                                                            <div><v-icon small>mdi-phone</v-icon>{{item.phone}}</div>
+                                                        <v-card-text>
+                                                            <div v-text="item.description"></div>
                                                         </v-card-text>
                                                     </div>
 
@@ -150,26 +148,23 @@
                                                     </v-btn>
                                                     <v-spacer></v-spacer>
                                                     <v-btn
-                                                        color="cyan darken-2"
-                                                        @click="toBusProcess"
-                                                        large
-                                                        dark
-                                                        width="180"
-                                                        :id="item.bus_id"
+                                                            color="cyan darken-2"
+                                                            @click="toBusProcess"
+                                                            large
+                                                            dark
+                                                            width="180"
+                                                            :id="item.bus_id"
                                                     >
                                                         办理详情
                                                     </v-btn>
                                                 </v-card-actions>
                                                 <v-expand-transition>
                                                     <div v-show="showDetail === i">
-                                                        <v-divider></v-divider>
-                                                        <v-card-text>
-                                                            <div v-text="item.description"></div>
-                                                        </v-card-text>
+                                                        <v-chip outlined class="ma-1"><v-icon>mdi-clock</v-icon>{{item.work_time}}</v-chip>
+                                                        <v-chip outlined class="ma-1"><v-icon>mdi-phone</v-icon>{{item.phone}}</v-chip>
                                                     </div>
                                                 </v-expand-transition>
                                             </v-card>
-
                                             <v-divider
                                                     v-if="i < comments.length - 1"
                                                     :key="i"
@@ -468,6 +463,8 @@
         name: "NewHome",
         data () {
             return {
+                isActive: false,
+
                 /* 搜索主页 */
                 inputValue: "",
                 showDetail: false,
@@ -525,6 +522,7 @@
                         bus_id: '',
                         bus_name: '办理结婚证',
                         description: '结婚年龄:男年满22周岁.女年满20周岁',
+                        requirement: '需要适当的结婚年龄',
                         cost: '50',
                     },
                     {
