@@ -1,5 +1,5 @@
 <template>
-    <v-container onload="loadHotBusiness()">
+    <v-container onload="loadInfo()">
         <v-row justify="center">
             <v-card max-width="500" min-width="400">
 
@@ -88,7 +88,6 @@
                                         width="100%"
                                         class="mx-auto"
                                 >
-
                                     <v-app-bar
                                             dark
                                             color="cyan darken-2"
@@ -125,9 +124,8 @@
                                                         ></v-card-title>
                                                         <v-card-subtitle v-text="item.location"></v-card-subtitle>
 
-                                                        <v-card-text >
-                                                            <div><v-icon small>mdi-clock</v-icon>{{item.work_time}}</div>
-                                                            <div><v-icon small>mdi-phone</v-icon>{{item.phone}}</div>
+                                                        <v-card-text>
+                                                            <div v-text="item.description"></div>
                                                         </v-card-text>
                                                     </div>
 
@@ -150,28 +148,25 @@
                                                     </v-btn>
                                                     <v-spacer></v-spacer>
                                                     <v-btn
-                                                        color="cyan darken-2"
-                                                        @click="toBusProcess"
-                                                        large
-                                                        dark
-                                                        width="180"
-                                                        :id="item.bus_id"
+                                                            color="cyan darken-2"
+                                                            @click="toBusProcess"
+                                                            large
+                                                            dark
+                                                            width="180"
+                                                            :id="item.bus_id"
                                                     >
                                                         办理详情
                                                     </v-btn>
                                                 </v-card-actions>
                                                 <v-expand-transition>
                                                     <div v-show="showDetail === i">
-                                                        <v-divider></v-divider>
-                                                        <v-card-text>
-                                                            <div v-text="item.description"></div>
-                                                        </v-card-text>
+                                                        <v-chip outlined class="ma-1"><v-icon>mdi-clock</v-icon>{{item.work_time}}</v-chip>
+                                                        <v-chip outlined class="ma-1"><v-icon>mdi-phone</v-icon>{{item.phone}}</v-chip>
                                                     </div>
                                                 </v-expand-transition>
                                             </v-card>
-
                                             <v-divider
-                                                    v-if="i < comments.length - 1"
+                                                    v-if="i < businesses.length - 1"
                                                     :key="i"
                                             ></v-divider>
                                         </v-col>
@@ -260,7 +255,7 @@
 
                                         <v-spacer></v-spacer>
 
-                                        <v-btn icon>
+                                        <v-btn icon @click="toNewChat">
                                             <v-icon>
                                                 mdi-plus
                                             </v-icon>
@@ -268,7 +263,7 @@
                                     </v-app-bar>
                                     <v-row dense>
                                         <v-col
-                                                v-for="(item, i) in comments"
+                                                v-for="(item, i) in chats"
                                                 :key="i"
                                                 cols="12"
                                         >
@@ -279,8 +274,8 @@
                                                         <v-card-actions>
                                                             <v-row>
                                                                 <v-col>
-                                                                    <v-btn icon @click="like = !like">
-                                                                        <v-icon v-if="!like">
+                                                                    <v-btn icon @click="like = i">
+                                                                        <v-icon v-if="like !== i">
                                                                             mdi-heart-outline
                                                                         </v-icon>
                                                                         <v-icon
@@ -293,12 +288,16 @@
 
 
                                                                     <span class="subheading mr-2">{{ item.likes }}</span>
-                                                                    <v-btn icon @click="toComment">
+                                                                    <v-btn
+                                                                            icon
+                                                                            @click="toChat"
+                                                                            :id="item.chat_id"
+                                                                    >
                                                                         <v-icon>
                                                                             mdi-message-outline
                                                                         </v-icon>
                                                                     </v-btn>
-                                                                    <span class="subheading mr-2">{{ item.discussion }}</span>
+                                                                    <span class="subheading mr-2">{{ item.discussions }}</span>
                                                                 </v-col>
                                                             </v-row>
 
@@ -315,7 +314,7 @@
                                                     </v-avatar>
                                                 </div>
                                                 <v-divider
-                                                        v-if="i < comments.length - 1"
+                                                        v-if="i < chats.length - 1"
                                                         :key="i"
                                                 ></v-divider>
                                             </v-card>
@@ -463,30 +462,19 @@
 <script>
     import businessService from "../../service/businessService";
     import myInformationService from "../../service/myInformationService";
+    import chatService from "../../service/chatService";
 
     export default {
         name: "NewHome",
         data () {
             return {
+                isActive: false,
+                tabs: "tabs-2",
                 /* 搜索主页 */
                 inputValue: "",
                 showDetail: false,
-                tabs: "tabs-1",
-                like: false,
-                hotSearch: [
-                    {
-                        hot_rate: '12555',
-                        headline: '身份证怎么办理',
-                    },
-                    {
-                        hot_rate: '2342',
-                        headline: '办理房产证需要到什么地方去',
-                    },
-                    {
-                        hot_rate: '118',
-                        headline: '我想买车要办里什么证件吗',
-                    },
-                ],
+
+                like: -1,
                 businesses: [
                     {
                         phone: '18088012342',
@@ -525,6 +513,7 @@
                         bus_id: '',
                         bus_name: '办理结婚证',
                         description: '结婚年龄:男年满22周岁.女年满20周岁',
+                        requirement: '需要适当的结婚年龄',
                         cost: '50',
                     },
                     {
@@ -543,10 +532,24 @@
                 ],
 
                 /* 评论交流 */
-                comments: [
+                hotSearch: [
+                    {
+                        hot_rate: '12555',
+                        headline: '身份证怎么办理',
+                    },
+                    {
+                        hot_rate: '2342',
+                        headline: '办理房产证需要到什么地方去',
+                    },
+                    {
+                        hot_rate: '118',
+                        headline: '我想买车要办里什么证件吗',
+                    },
+                ],
+                /*chats: [
                     {
                         likes: "123",
-                        discussion: "33",
+                        discussions: "33",
                         picture: 'https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00201-399.jpg',
                         content: '到户口所在地的派出所申请领取第二代居民身份证时，应该提前准备好相应的证件，一般只需要准备好户口本就行了，到了派出所后工作人员会根据情况帮忙进行办理。',
                     },
@@ -574,7 +577,17 @@
                         picture: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3849073968,2338614801&fm=26&gp=0.jpg',
                         content: '如果到了合适的年龄,是可以去户口所在地的派出所办理身份证的。那么,您知道怎么正确办理身份证吗?到户口所在地的派出所申请领取第二代居民身份证时，应该提前准备好相应的证件，一般只需要准备好户口本就行了，到了派出所后工作人员会根据情况帮忙进行办理。',
                     },
-                ],
+                ],*/
+                chats: [{
+                    chat_id: '',
+                    content: '',
+                    discussions: '',
+                    likes: '',
+                    picture: '',
+                    /*user_id: '',
+                    name: '',
+                    avatar: '',*/
+                }],
 
                 /* 我的信息 */
                 flag: 1,
@@ -594,11 +607,12 @@
             }
         },
         mounted: function() {
-            this.loadHotBusiness();
+            this.loadInfo();
         },
         methods: {
-            // 获取热门业务
-            loadHotBusiness() {
+
+            loadInfo() {
+                // 获取热门业务
                 businessService.getHotBusiness().then((res) => {
                     if (res.data.code !== 200) {
                         alert(res.data.msg);
@@ -608,11 +622,21 @@
                 }).catch((err) => {
                     alert(err);
                 });
+
+                // 获取评论
+                chatService.getHotChats().then((res) => {
+                    if (res.data.code !== 200) {
+                        alert(res.data.msg);
+                    } else {
+                        this.chats = res.data.data.chats;
+                    }
+                }).catch((err) => {
+                    alert(err);
+                });
+
             },
 
-            toComment() {
-                this.$router.push({ name: 'comment' });
-            },
+            /* 部门业务 */
             toSearchResult() {
                 this.$router.push({ name: 'searchResult' });
             },
@@ -621,6 +645,17 @@
                 this.$router.push({ name: 'process' , params: {'busId': busId}});
             },
 
+            /* 聊天交流 */
+            toNewChat() {
+                this.$router.push({ name: "newChat" });
+            },
+            toChat(event) {
+                let chatId = event.currentTarget.id;
+                this.$router.push({ name: 'chat', params: {'chatId': chatId} });
+            },
+
+
+            /* 我的信息 */
             submit:function () {
                 let phone = document.getElementById("phone").value;
                 let password = document.getElementById("password").value;
@@ -664,7 +699,6 @@
                     alert(err);
                 })
             },
-
             showInformation(){
                 this.flag2 = !this.flag2;
             }

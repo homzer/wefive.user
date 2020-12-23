@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import userRouter from "./module/user";
 import searchRouter from "./module/search";
 import processRouter from "./module/process";
+import chatRouter from "./module/chat";
 import commentRouter from "./module/comment";
 
 Vue.use(VueRouter);
@@ -38,6 +39,7 @@ const routes = [
     ...searchRouter,
     ...userRouter,
     ...processRouter,
+    ...chatRouter,
     ...commentRouter,
 ];
 

@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container onload="loadChat()">
         <v-toolbar flat color="cyan darken-2" dark>
             <v-btn icon @click="back">
                 <v-icon>mdi-reply</v-icon>
@@ -13,17 +13,17 @@
             <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                     <v-avatar color="cyan darken-2" class="mt-2" size="35">
-                        <v-icon dark v-if="!user.avatar">
+                        <v-icon dark v-if="!chat.avatar">
                             mdi-account-circle-outline
                         </v-icon>
-                        <v-img v-else :src="user.avatar" alt="U">
+                        <v-img v-else :src="chat.avatar" alt="U">
                         </v-img>
                     </v-avatar>
-                    <span class="ml-4" v-if="user.user_name && user.user_name.length > 0">{{ user.user_name }}</span>
+                    <span class="ml-4" v-if="chat.name && chat.name.length > 0">{{ chat.name }}</span>
                     <span class="ml-4" v-else>匿名用户</span>
-                    <v-card-text v-text="comment.content"></v-card-text>
+                    <v-card-text v-text="chat.content"></v-card-text>
                     <v-img
-                            :src="comment.picture"
+                            :src="chat.picture"
                             max-width="400"
                             width="60%"
                     ></v-img>
@@ -41,11 +41,11 @@
                                         mdi-heart
                                     </v-icon>
                                 </v-btn>
-                                <span class="subheading mr-2">{{ comment.likes }}</span>
+                                <span class="subheading mr-2">{{ chat.likes }}</span>
                                 <v-icon class="mx-1">
                                     mdi-message-outline
                                 </v-icon>
-                                <span class="subheading mr-2">{{ comment.discussion }}</span>
+                                <span class="subheading mr-2">{{ chat.discussions }}</span>
                             </v-col>
                         </v-row>
 
@@ -59,7 +59,7 @@
         <v-card flat class="mt-6">
             <v-row dense>
                 <v-col
-                        v-for="(item, i) in subComments"
+                        v-for="(item, i) in subChats"
                         :key="i"
                         cols="12"
                 >
@@ -73,7 +73,7 @@
                                     <v-img v-else :src="item.avatar" alt="U">
                                     </v-img>
                                 </v-avatar>
-                                <span class="ml-4" v-if="item.user_name">{{ item.user_name }}</span>
+                                <span class="ml-4" v-if="item.name">{{ item.name }}</span>
                                 <span class="ml-4" v-else>匿名用户</span>
                                 <v-card-text v-text="item.content"></v-card-text>
                                 <v-img
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <v-divider
-                                v-if="i < subComments.length - 1"
+                                v-if="i < subChats.length - 1"
                                 :key="i"
                         ></v-divider>
                     </v-card>
@@ -96,11 +96,23 @@
 </template>
 
 <script>
+    import chatService from "../../service/chatService";
+
     export default {
         name: "comment",
         data () {
             return {
                 like: false,
+                chat: {
+                    chat_id: '',
+                    content: '',
+                    discussions: '',
+                    likes: '',
+                    picture: '',
+                    user_id: '',
+                    name: '',
+                    avatar: '',
+                },
                 comment: {
                     user_id: '',
                     picture: 'https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00201-399.jpg',
@@ -131,20 +143,45 @@
                     },
                 ],
 
-                /*subComments: [{
+                subChats: [{
+                    sub_id: '',
+                    chat_id: '',
                     user_id: '',
-                    picture: '',
                     content: '',
+                    picture: '',
+                    avatar: '',
+                    name: '',
                 }],
-                subUsers: [{
-                    user_id: "",
-                    avatar: "",
-                    user_name: "",
-                }],*/
             }
         },
-
+        mounted: function() {
+            this.loadChat();
+        },
         methods: {
+            loadChat() {
+                let chatId = this.$route.params.chatId;
+                chatService.getChatByChatId(chatId).then((res) => {
+                    if (res.data.code !== 200) {
+                        alert(res.data.msg);
+                    } else {
+                        this.chat = res.data.data.chat;
+                    }
+                }).catch((err) => {
+                    alert(err);
+                });
+
+                chatService.getSubChats(chatId).then((res) => {
+                    if (res.data.code !== 200) {
+                        alert(res.data.msg);
+                    } else {
+                        this.subChats = res.data.data.subChats;
+                    }
+                }).catch((err) => {
+                    alert(err);
+                });
+            },
+
+
             back() {
                 this.$router.go(-1);
             }
