@@ -1,8 +1,8 @@
 const commentRouter = [
     {
-        path: '/comment',
+        path: '/comment/deptId=:deptId',
         name: 'comment',
-        component: () => import('../../views/comment/Comment.vue')
+        component: () => import('../../views/comment/DepartComment.vue')
     },
 ];
 

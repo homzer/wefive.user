@@ -64,7 +64,7 @@
                                 active-class="cyan--text"
                         >
                             <template v-for="(item, index) in items">
-                                <v-list-item :key="item.title">
+                                <v-list-item :key="item.title" @click="toDepartComment">
                                     <template v-slot:default="{ active }">
                                         <v-list-item-content>
                                             <v-list-item-title v-text="item.title"></v-list-item-title>
@@ -150,9 +150,12 @@
             ],
         }),
         methods: {
+            toDepartComment() {
+                this.$router.push({ name: 'comment', params: {"deptId": "1"} })
+            },
             back() {
                 this.$router.go(-1);
-            }
+            },
         }
     }
 </script>
