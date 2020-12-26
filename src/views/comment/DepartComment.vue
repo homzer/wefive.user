@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container onload="loadDepartment()">
     <v-toolbar flat color="cyan darken-2" dark>
       <v-btn icon @click="back">
         <v-icon>mdi-reply</v-icon>
@@ -19,40 +19,85 @@
 
           <v-row dense>
             <v-col
-                v-for="(item, i) in departments"
-                :key="i"
                 cols="12"
             >
-              <v-card flat :id="item.dept_id">
+              <v-card flat :id="department.dept_id">
                 <div class="d-flex flex-no-wrap justify-space-between">
                   <div>
                     <v-card-title
-                        v-text="item.dept_name"
+                        v-text="department.dept_name"
                     ></v-card-title>
-                    <v-card-subtitle v-text="item.dept_location"></v-card-subtitle>
-                    <v-card-subtitle v-text="item.dept_desc"></v-card-subtitle>
+                    <v-card-subtitle v-text="department.location"></v-card-subtitle>
+                    <v-card-subtitle v-text="department.description"></v-card-subtitle>
                   </div>
 
                   <v-avatar
                       class="ma-3"
                       size="125"
                       tile
-                      v-if="item.dept_picture"
+                      v-if="department.picture"
                   >
-                    <v-img :src="item.dept_picture"></v-img>
+                    <v-img :src="department.picture"></v-img>
                   </v-avatar>
                 </div>
 
               </v-card>
 
-              <v-divider
-                  v-if="i < departments.length - 1"
-                  :key="i"
-              ></v-divider>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                        color="cyan darken-2"
+                        @click=" show === i ? show = -1 : show = i "
+                        large
+                        dark
+                        width="180"
+                >
+                  我要预约
+                </v-btn>
+              </v-card-actions>
+              <div v-show="show" align="center">
+                <label for="meeting" style="font-family: 黑体">预约时间:  </label>
+                <input id="meeting" type="date" value="" style="border: 2px solid #c4c7ce; height: 38px;"/>
+                <br>
+                <input type="radio" v-model="first" value="morn">
+                <label >8:30-12:00</label>
+                <input type="radio" v-model="first" value="noon"/>
+                <label >14:30-17:00</label>
+
+                <v-btn
+                        color="cyan darken-2"
+                        @click="reserve"
+                        dark
+                        width="18"
+                        height="25"
+                        style="float: right"
+                >
+                  提交
+                </v-btn>
+              </div>
             </v-col>
           </v-row>
         </v-card>
       </template>
+    </v-card>
+
+    <!-- 折线图 -->
+    <v-card class="mt-2" color="cyan darken-2" dark>
+      <v-card-title>人数统计</v-card-title>
+      <v-sheet
+              class="v-sheet--offset mx-auto align-end"
+              elevation="2"
+              color="white"
+      >
+        <v-sparkline
+                auto-draw
+                :labels="labels"
+                :value="value"
+                color="cyan darken-2"
+                line-width="2"
+                padding="16"
+        ></v-sparkline>
+      </v-sheet>
     </v-card>
 
     <div class="commentBox" flat color="cyan darken-2">
@@ -98,19 +143,46 @@
 </template>
 
 <script>
+import departService from "../../service/departService";
+import reserveService from "../../service/reserveService";
+
 export default {
   name: "DepartComment",
   data: () => ({
+    labels: [
+      '12am',
+      '3am',
+      '6am',
+      '9am',
+      '12pm',
+      '3pm',
+      '6pm',
+      '9pm',
+    ],
+    value: [
+      200,
+      675,
+      410,
+      390,
+      310,
+      460,
+      250,
+      240,
+    ],
+
+
     comments:"",
     selected: [2],
     active: false,
-    departments:[
+    show: false,
+    first: '',
+    department:[
       {
-        dept_name:"洪山区市政府",
-        dept_desc:"人民的公仆，爱你哦",
-        dept_workTime:"上午8:30-12:00；下午2:30-5:30",
-        dept_location:"武汉市集贤路特1号华通花园2号楼",
-        dept_picture:"https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2723534203,3190979793&fm=26&gp=0.jpg",
+        dept_name:"",
+        description:"",
+        work_time:"",
+        location:"",
+        picture:"",
       }
     ],
     usersDepartTalks: [
@@ -129,8 +201,70 @@ export default {
       },
     ]
   }),
-
+  mounted: function() {
+    this.loadDepartment();
+  },
   methods: {
+    loadDepartment() {
+        let deptId = this.$route.params.deptId;
+        departService.getDepartment(deptId).then((res) => {
+          if (res.data.code !== 200) {
+            alert(res.data.msg);
+          } else {
+            this.department = res.data.data.department;
+          }
+        })
+    },
+    //预约
+    reserve(){
+      const date = document.getElementById("meeting").value;
+      if(date===""){
+        alert("请选择日期!");
+        return;
+      }
+      if(this.first===""){
+        alert("请选择上午或下午！");
+        return;
+      }
+      const today = new Date();
+      const day = new Date(date);
+      if(day<today){
+        alert("预约失败！你只能预约明天之后的日期");
+        return;
+      }
+
+      let t;
+      if(this.first==='noon'){
+        t = 2;
+      }else{
+        t = 1;
+      }
+      let that = this;
+      reserveService.checkPeople(4, date,t).then((res) => {
+        if (res.data.code !== 200) {
+          alert(res.data.msg);
+          return null;
+        }
+        const b = confirm("现在已经预约" + res.data.nowpeople + "人\n确定要预约吗");
+
+        if(b===true){
+          reserveService.reservation(that.$store.state.userModule.userInfo.userId,4,
+                  date,t).then((res) => {
+            if (res.data.code !== 200) {
+              alert(res.data.msg);
+              return null;
+            }
+
+          }).catch((err) => {
+            alert(err);
+          })
+        }
+
+
+      }).catch((err) => {
+        alert(err);
+      })
+    },
     back() {
       this.$router.go(-1);
     },
@@ -140,6 +274,7 @@ export default {
     cancelComment(){
       this.comments="";
     },
+
   }
 }
 </script>

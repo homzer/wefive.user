@@ -14,17 +14,6 @@ const routes = [
         name: 'app',
         component: () => import('../views/login/Init.vue')
     },
-
-    {
-      path: '/home',
-      name: 'home',
-      // 元信息
-      /*meta: {
-        // true 代表这个路由需要认证
-        auth: true,
-      },*/
-      component: () => import('../views/home/Home.vue')
-    },
     {
         path: '/newHome',
         name: 'newHome',

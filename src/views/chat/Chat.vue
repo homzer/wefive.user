@@ -30,7 +30,7 @@
                     <v-card-actions>
                         <v-row>
                             <v-col>
-                                <v-btn icon @click="like = !like">
+                                <v-btn icon @click="likeIt">
                                     <v-icon v-if="!like">
                                         mdi-heart-outline
                                     </v-icon>
@@ -57,6 +57,31 @@
         <v-divider color="black"></v-divider>
         <!-- 留言区 -->
         <v-card flat class="mt-6">
+            <v-row>
+                <v-col cols="9">
+                    <v-textarea
+                            auto-grow
+                            placeholder="我来说一句..."
+                            rows="1"
+                            outlined
+                            color="cyan darken-2"
+                            dense
+                            value=""
+                            id="subChat"
+                            autocomplete="off"
+                    ></v-textarea>
+                </v-col>
+                <v-col cols="1">
+                    <v-btn
+                            color="cyan darken-2"
+                            dark
+                            large
+                            @click="createSubChat"
+                    >
+                        回复
+                    </v-btn>
+                </v-col>
+            </v-row>
             <v-row dense>
                 <v-col
                         v-for="(item, i) in subChats"
@@ -75,6 +100,15 @@
                                 </v-avatar>
                                 <span class="ml-4" v-if="item.name">{{ item.name }}</span>
                                 <span class="ml-4" v-else>匿名用户</span>
+                                <v-btn
+                                        :id="item.sub_id"
+                                        v-if="$store.state.userModule.userInfo.userId === item.user_id"
+                                        text
+                                        small
+                                        right
+                                        color="grey"
+                                        @click="deleteSubChat"
+                                >删除</v-btn>
                                 <v-card-text v-text="item.content"></v-card-text>
                                 <v-img
                                         v-if="item.picture"
@@ -181,7 +215,49 @@
                 });
             },
 
+            createSubChat() {
+                let chatId = this.$route.params.chatId;
+                let content = document.getElementById("subChat").value;
+                if (content.length === 0) {
+                    return null;
+                }
+                let userId = this.$store.state.userModule.userInfo.userId;
+                chatService.createSubChat(chatId, content, userId.toString()).then((res) => {
+                    if (res.data.code !== 200) {
+                        alert(res.data.msg);
+                    } else {
+                        location.reload();
+                    }
+                }).catch((err) => {
+                    alert(err);
+                });
+            },
 
+            deleteSubChat(event) {
+                let subId = event.currentTarget.id;
+                chatService.deleteSubChat(subId.toString()).then((res) => {
+                    if (res.data.code !== 200) {
+                        alert(res.data.msg);
+                    } else {
+                        location.reload();
+                    }
+                }).catch((err) => {
+                    alert(err);
+                });
+            },
+
+
+            likeIt() {
+                let chatId = this.$route.params.chatId;
+                if (this.like) {
+                    this.like = false;
+                    this.chat.likes -= 1;
+                    return null;
+                }
+                this.like = true;
+                this.chat.likes += 1;
+                chatService.likeChat(chatId);
+            },
             back() {
                 this.$router.go(-1);
             }

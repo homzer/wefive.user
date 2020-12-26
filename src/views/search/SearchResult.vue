@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container onload="getSearchResult()">
         <v-toolbar flat color="cyan darken-2" dark>
             <v-btn icon @click="back">
                 <v-icon>mdi-reply</v-icon>
@@ -9,149 +9,168 @@
 
             <v-spacer></v-spacer>
         </v-toolbar>
-        <v-card
-                class="pa-4"
-                flat
-                height="200"
-                img="https://cdn.vuetifyjs.com/images/toolbar/map.jpg"
-        >
-            <v-toolbar
-                    dense
-                    floating
+        <v-progress-linear
+                v-if="!show"
+                indeterminate
+                height="4"
+                color="cyan darken-1"
+        ></v-progress-linear>
+
+        <v-container v-if="show">
+
+            <v-card
+                    class="pa-4"
+                    flat
+                    height="200"
+                    img="https://cdn.vuetifyjs.com/images/toolbar/map.jpg"
             >
-                <v-text-field
-                        hide-details
-                        prepend-icon="mdi-magnify"
-                        single-line
-                ></v-text-field>
-
-                <v-btn icon>
-                    <v-icon>mdi-crosshairs-gps</v-icon>
-                </v-btn>
-
-                <v-btn icon>
-                    <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
-            </v-toolbar>
-        </v-card>
-
-        <v-card>
-            <template>
-                <v-card
-                        class="mx-auto mt-3"
-                        max-width="500"
+                <v-toolbar
+                        dense
+                        floating
                 >
-                    <v-toolbar
-                            color="cyan darken-2"
-                            dark
+                    <v-text-field
+                            hide-details
+                            prepend-icon="mdi-magnify"
+                            single-line
+                    ></v-text-field>
+
+                    <v-btn icon>
+                        <v-icon>mdi-crosshairs-gps</v-icon>
+                    </v-btn>
+
+                    <v-btn icon>
+                        <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                </v-toolbar>
+            </v-card>
+
+            <v-card>
+                <template>
+                    <v-card
+                            class="mx-auto mt-3"
+                            max-width="500"
                     >
-                        <v-toolbar-title>离我最近部门</v-toolbar-title>
-
-                        <v-spacer></v-spacer>
-
-                        <v-btn icon>
-                            <v-icon>mdi-magnify</v-icon>
-                        </v-btn>
-
-                        <v-btn icon>
-                            <v-icon>mdi-checkbox-marked-circle</v-icon>
-                        </v-btn>
-                    </v-toolbar>
-
-                    <v-list two-line>
-                        <v-list-item-group
-                                v-model="selected"
-                                active-class="cyan--text"
+                        <v-toolbar
+                                color="cyan darken-2"
+                                dark
                         >
-                            <template v-for="(item, index) in items">
-                                <v-list-item :key="item.title" @click="toDepartComment">
-                                    <template v-slot:default="{ active }">
-                                        <v-list-item-content>
-                                            <v-list-item-title v-text="item.title"></v-list-item-title>
+                            <v-toolbar-title>离我最近部门</v-toolbar-title>
 
-                                            <v-list-item-subtitle
-                                                    class="text--primary"
-                                                    v-text="item.headline"
-                                            ></v-list-item-subtitle>
+                            <v-spacer></v-spacer>
 
-                                            <v-list-item-subtitle v-text="item.subtitle"></v-list-item-subtitle>
-                                        </v-list-item-content>
+                            <v-btn icon>
+                                <v-icon>mdi-magnify</v-icon>
+                            </v-btn>
 
-                                        <v-list-item-action>
-                                            <v-list-item-action-text v-text="item.action"></v-list-item-action-text>
+                            <v-btn icon>
+                                <v-icon>mdi-checkbox-marked-circle</v-icon>
+                            </v-btn>
+                        </v-toolbar>
 
-                                            <v-icon
-                                                    v-if="!active"
-                                                    color="grey lighten-1"
-                                            >
-                                                mdi-star-outline
-                                            </v-icon>
+                        <v-list two-line>
+                            <v-list-item-group
+                                    v-model="selected"
+                                    active-class="cyan--text"
+                            >
+                                <template v-for="(item, index) in departments">
+                                    <v-list-item :key="item.title" :id="item.dept_id" @click="toDepartComment">
+                                        <template v-slot:default="{ active }">
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="item.dept_name"></v-list-item-title>
 
-                                            <v-icon
-                                                    v-else
-                                                    color="yellow darken-3"
-                                            >
-                                                mdi-star
-                                            </v-icon>
+                                                <v-list-item-subtitle
+                                                        class="text--primary"
+                                                        v-text="item.location"
+                                                ></v-list-item-subtitle>
 
-                                            <v-list-item-action-text v-text="item.rate"></v-list-item-action-text>
-                                        </v-list-item-action>
-                                    </template>
-                                </v-list-item>
+                                                <v-list-item-subtitle v-text="item.description"></v-list-item-subtitle>
+                                            </v-list-item-content>
 
-                                <v-divider
-                                        v-if="index < items.length - 1"
-                                        :key="index"
-                                ></v-divider>
-                            </template>
-                        </v-list-item-group>
-                    </v-list>
-                </v-card>
-            </template>
-        </v-card>
+                                            <v-list-item-action>
+                                                <v-list-item-action-text v-text="item.action"></v-list-item-action-text>
+
+                                                <v-icon
+                                                        v-if="!active"
+                                                        color="grey lighten-1"
+                                                >
+                                                    mdi-star-outline
+                                                </v-icon>
+
+                                                <v-icon
+                                                        v-else
+                                                        color="yellow darken-3"
+                                                >
+                                                    mdi-star
+                                                </v-icon>
+
+                                                <v-list-item-action-text v-text="item.rate"></v-list-item-action-text>
+                                            </v-list-item-action>
+                                        </template>
+                                    </v-list-item>
+
+                                    <v-divider
+                                            v-if="index < departments.length - 1"
+                                            :key="index"
+                                    ></v-divider>
+                                </template>
+                            </v-list-item-group>
+                        </v-list>
+                    </v-card>
+                </template>
+            </v-card>
+        </v-container>
+
     </v-container>
 </template>
 
 <script>
+    import searchService from "../../service/searchService";
+
     export default {
         name: "SearchResult",
         data: () => ({
             selected: [2],
             active: false,
-            items: [
+            show: false,
+            departments: [
                 {
-                    action: '15 min',
-                    headline: '洪山区珞南街道44-5号',
-                    subtitle: `处理交通事故纠纷，办理驾驶证`,
-                    title: '洪山区公安局',
-                    rate: '5.0星级',
-                },
-                {
-                    action: '2 hr',
-                    headline: '洪山区珞南街道44-5号',
-                    subtitle: `test`,
-                    title: '街道口公安局',
-                    rate: '5.0星级',
-                },
-                {
-                    action: '6 hr',
-                    headline: '洪山区珞南街道44-5号',
-                    subtitle: '处理交通事故纠纷，办理驾驶证',
-                    title: '汉阳民证局',
-                    rate: '4.5星级',
-                },
-                {
-                    action: '12 hr',
-                    headline: '洪山区珞南街道44-5号',
-                    subtitle: '处理交通事故纠纷，办理驾驶证',
-                    title: '马房山车管所',
-                    rate: '4.0星级',
+                    dept_id: '',
+                    action: '',
+                    location: '',
+                    description: '',
+                    dept_name: '',
+                    work_time: '',
                 },
             ],
         }),
+        mounted: function() {
+            this.getSearchResult();
+        },
         methods: {
-            toDepartComment() {
-                this.$router.push({ name: 'comment', params: {"deptId": "1"} })
+            getSearchResult() {
+                let info = this.$route.params.info;
+                console.log(info);
+
+                let userId = this.$store.state.userModule.userInfo.userId;
+                let createTime = "2020-12-08";
+                searchService.getSearchInfo(info, userId, createTime).then((res) => {
+                    if (res.data.code !== 200) {
+                        alert(res.data.msg);
+                    }
+                    this.departments = res.data.departments;
+                    if (!this.departments) {
+                        alert("未查找到相关部门！");
+                        this.$router.go(-1);
+                    }
+                    console.log(res.data);
+                    this.show = true;
+                }).catch((err) => {
+                    alert(err);
+                });
+            },
+            toDepartComment(event) {
+                let deptId = event.currentTarget.id;
+                this.$router.push({ name: 'comment', params: {"deptId": deptId} });
             },
             back() {
                 this.$router.go(-1);
@@ -161,5 +180,8 @@
 </script>
 
 <style scoped>
-
+#map{
+    width: 100%;
+    height: 100%;
+}
 </style>

@@ -8,91 +8,77 @@
             <v-toolbar-title>创建新动态</v-toolbar-title>
             <v-spacer></v-spacer>
         </v-toolbar>
-        <v-card class="mt-7" flat>
-            <v-row justify="center">
-                <v-col cols="11">
-                    <template>
-                        <v-file-input
-                                v-model="file"
-                                color="cyan darken-2"
-                                counter
-                                label="File input"
-                                placeholder="Select your files"
-                                prepend-icon="mdi-paperclip"
+        <v-form v-model="valid">
+            <v-card class="mt-7" flat>
+                <v-row justify="center">
+                    <v-col cols="11">
+                        <v-textarea
+                                label="添加新交流主题"
+                                auto-grow
                                 outlined
-                                :show-size="1000"
+                                rows="1"
+                                :rules="titleRules"
+                                :counter="50"
+                                row-height="25"
+                                shaped
+                                value=""
+                                id="title"
+                                color="cyan darken-2"
+                        ></v-textarea>
+                    </v-col>
+                    <v-col cols="11">
+                        <v-textarea
+                                label="输入内容..."
+                                auto-grow
+                                outlined
+                                :rules="notNullRules"
+                                rows="3"
+                                row-height="25"
+                                shaped
+                                value=""
+                                id="content"
+                                color="cyan darken-2"
+                        ></v-textarea>
+                    </v-col>
+                    <v-col cols="11">
+                        <v-textarea
+                                label="图片URL地址"
+                                auto-grow
+                                outlined
+                                rows="1"
+                                row-height="25"
+                                shaped
+                                value=""
+                                id="picture"
+                                color="cyan darken-2"
+                        ></v-textarea>
+                    </v-col>
+                    <v-col cols="11" >
+                        <v-btn
+                                color="cyan darken-2"
+                                dark
+                                large
+                                class="ma-2"
+                                width="95%"
+                                @click="createNewChat"
                         >
-                            <template v-slot:selection="{ index, text }">
-                                <v-chip
-                                        v-if="index < 2"
-                                        color="cyan darken-2"
-                                        dark
-                                        label
-                                        small
-                                >
-                                    {{ text }}
-                                </v-chip>
+                            添加新动态
+                        </v-btn>
+                        <v-btn
+                                large
+                                color="cyan darken-2"
+                                outlined
+                                width="95%"
+                                class="ma-2"
+                                @click="back"
+                        >
+                            取消发布
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-card>
+        </v-form>
 
-                                <span
-                                        v-else-if="index === 2"
-                                        class="overline grey--text text--darken-3 mx-2"
-                                >
-                                    +{{ files.length - 2 }} File(s)
-                                </span>
-                            </template>
-                        </v-file-input>
-                    </template>
-                </v-col>
-                <v-col cols="11">
-                    <v-textarea
-                            label="添加新交流主题"
-                            auto-grow
-                            outlined
-                            rows="3"
-                            row-height="25"
-                            shaped
-                            value=""
-                            id="content"
-                            color="cyan darken-2"
-                    ></v-textarea>
-                </v-col>
-                <v-col cols="11">
-                    <v-textarea
-                            label="图片URL地址"
-                            auto-grow
-                            outlined
-                            rows="1"
-                            row-height="25"
-                            shaped
-                            value=""
-                            id="picture"
-                            color="cyan darken-2"
-                    ></v-textarea>
-                </v-col>
-                <v-col cols="11" >
-                    <v-btn
-                            color="cyan darken-2"
-                            dark
-                            large
-                            class="ma-2"
-                            width="95%"
-                            @click="createNewChat"
-                    >
-                        添加新动态
-                    </v-btn>
-                    <v-btn
-                            large
-                            color="cyan darken-2"
-                            outlined
-                            width="95%"
-                            class="ma-2"
-                            @click="back"
-                    >
-                        取消发布
-                    </v-btn>
-                </v-col>
-            </v-row>
-        </v-card>
         <v-snackbar
                 v-model="notCompleted"
                 :timeout="2000"
@@ -100,7 +86,7 @@
                 bottom
                 left
         >
-            不能发表空内容的动态哦！
+            相关信息请填写正确！
         </v-snackbar>
     </v-container>
 </template>
@@ -113,24 +99,37 @@
         data () {
             return {
                 notCompleted: false,
+                valid: false,
                 file: [],
+                titleRules: [
+                    v => !!v || '此项不能为空',
+                    v => v.length <= 50 || '必须小于50个字符',
+                ],
+                notNullRules: [
+                    v => !!v || '此项不能为空',
+                ],
+                length50Rules: [
+                    v => v.length <= 50 || '必须小于50个字符',
+                ],
             }
         },
 
         methods: {
             createNewChat() {
-                let content = document.getElementById("content").value;
-                if (content.length === 0) {
+                if (!this.valid) {
                     this.notCompleted = true;
                     return null;
                 }
+                let content = document.getElementById("content").value;
                 let picture = document.getElementById("picture").value;
+                let title = document.getElementById("title").value;
                 let userId = this.$store.state.userModule.userInfo.userId;
-                chatService.createNewChat(userId.toString(), content, picture).then((res) => {
+                chatService.createNewChat(userId.toString(), content, title, picture).then((res) => {
                     if (res.data.code !== 200) {
                         alert(res.data.msg);
                     } else {
                         alert(res.data.msg);
+                        this.back();
                     }
                 }).catch((err) => {
                     alert(err);

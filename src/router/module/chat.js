@@ -9,6 +9,11 @@ const chatRouter = [
         name: 'newChat',
         component: () => import('../../views/chat/NewChat.vue')
     },
+    {
+        path: '/chat/filtered/title=:title',
+        name: 'chatFiltered',
+        component: () => import('../../views/chat/ChatFiltered.vue')
+    },
 ];
 
 export default chatRouter;

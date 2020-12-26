@@ -184,19 +184,25 @@
                             <v-card-actions>
                                 <v-row class="mt-5">
                                     <v-col cols="9">
-                                        <v-text-field
+                                        <v-autocomplete
+                                                color="cyan darken-2"
+                                                :items="titles"
                                                 hide-details
                                                 prepend-inner-icon="mdi-magnify"
                                                 single-line
                                                 outlined
                                                 dense
+                                                value=""
+                                                id="chatFilter"
                                                 placeholder="搜索热门交流区"
-                                        ></v-text-field>
+                                                :filter="customFilter"
+                                        ></v-autocomplete>
                                     </v-col>
                                     <v-col cols="2">
                                         <v-btn
                                                 dark
                                                 color="cyan darken-2"
+                                                @click="toChatFiltered"
                                         >
                                             搜索
                                         </v-btn>
@@ -207,7 +213,7 @@
                             <!-- 热门问题 -->
                             <v-list two-line dense>
                                 <template v-for="(item, index) in hotSearch">
-                                    <v-list-item :key="item.title">
+                                    <v-list-item :key="item.title" >
                                         <template>
                                             <v-list-item-content>
                                                 <v-list-item-subtitle
@@ -267,31 +273,20 @@
                                                 :key="i"
                                                 cols="12"
                                         >
-                                            <v-card flat>
+                                            <v-card flat @click="toChat" :id="item.chat_id">
                                                 <div class="d-flex flex-no-wrap justify-space-between">
                                                     <div>
+                                                        <v-card-subtitle v-text="item.title"></v-card-subtitle>
                                                         <v-card-text v-text="item.content"></v-card-text>
                                                         <v-card-actions>
                                                             <v-row>
                                                                 <v-col>
-                                                                    <v-btn icon @click="like = i">
-                                                                        <v-icon v-if="like !== i">
-                                                                            mdi-heart-outline
-                                                                        </v-icon>
-                                                                        <v-icon
-                                                                                v-else
-                                                                                color="red darken-1"
-                                                                        >
-                                                                            mdi-heart
-                                                                        </v-icon>
-                                                                    </v-btn>
-
-
+                                                                    <v-icon>
+                                                                        mdi-heart-outline
+                                                                    </v-icon>
                                                                     <span class="subheading mr-2">{{ item.likes }}</span>
                                                                     <v-btn
                                                                             icon
-                                                                            @click="toChat"
-                                                                            :id="item.chat_id"
                                                                     >
                                                                         <v-icon>
                                                                             mdi-message-outline
@@ -391,20 +386,41 @@
                                                     >
                                                         <v-card class="card">
                                                             <span class="tit">
-                                                                我的足迹
+                                                                我的预约
                                                             </span>
                                                             <v-btn style="background-image: url('https://i.loli.net/2020/12/20/6CtLiIsGcjWkVgh.png');
                           height: 45px; float: right; width: 10px"
+                                                                   @click="showReserve === true ? showReserve = false : showReserve
+                                                                   = true"
                                                             >
                                                             </v-btn>
                                                         </v-card>
                                                     </v-col>
+                                                    <!--这里写预约信息-->
+                                                    <div class="mymess" v-show="showReserve" v-for="(item,i) in
+                                                    myOrder" :key="i">
+                                                        &nbsp;&nbsp;{{item.dept_id}}  {{item.order_day}}
+                                                        {{item.order_time}}
+                                                        <v-btn
+                                                                color="cyan darken-2"
+                                                                :id="item.dept_id"
+                                                                @click="cancelReserve"
+                                                                dark
+                                                                width="40"
+                                                                height="25"
+                                                                style="float: right"
+                                                        >
+                                                            取消
+                                                        </v-btn>
+                                                    </div>
+
+
                                                     <v-col
                                                             :cols="12"
                                                     >
                                                         <v-card class="card">
                   <span class="tit">
-                    我的收藏
+                    关于我们
                   </span>
                                                             <v-btn style="background-image: url('https://i.loli.net/2020/12/20/6CtLiIsGcjWkVgh.png');
                           height: 45px; float: right; width: 10px"
@@ -451,11 +467,21 @@
                             </template>
                         </v-card>
                     </v-tab-item>
+
+
                 </v-tabs-items>
 
             </v-card>
         </v-row>
-
+        <v-snackbar
+                v-model="isEmpty"
+                :timeout="2000"
+                absolute
+                top
+                left
+        >
+            您的输入为空！
+        </v-snackbar>
     </v-container>
 </template>
 
@@ -463,6 +489,7 @@
     import businessService from "../../service/businessService";
     import myInformationService from "../../service/myInformationService";
     import chatService from "../../service/chatService";
+    import reserveService from "../../service/reserveService";
 
     export default {
         name: "NewHome",
@@ -473,8 +500,8 @@
                 /* 搜索主页 */
                 inputValue: "",
                 showDetail: false,
+                isEmpty: false,
 
-                like: -1,
                 businesses: [
                     {
                         phone: '18088012342',
@@ -546,52 +573,25 @@
                         headline: '我想买车要办里什么证件吗',
                     },
                 ],
-                /*chats: [
-                    {
-                        likes: "123",
-                        discussions: "33",
-                        picture: 'https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00201-399.jpg',
-                        content: '到户口所在地的派出所申请领取第二代居民身份证时，应该提前准备好相应的证件，一般只需要准备好户口本就行了，到了派出所后工作人员会根据情况帮忙进行办理。',
-                    },
-                    {
-                        likes: "53",
-                        discussion: "5",
-                        picture: 'https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00666-2712.jpg',
-                        content: '如果到了合适的年龄,是可以去户口所在地的派出所办理身份证的。那么,您知道怎么正确办理身份证吗?到户口所在地的派出所申请领取第二代居民身份证时，应该提前准备好相应的证件，一般只需要准备好户口本就行了，到了派出所后工作人员会根据情况帮忙进行办理。',
-                    },
-                    {
-                        likes: "23",
-                        discussion: "13",
-                        picture: 'https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00209-639.jpg',
-                        content: '到户口所在地的派出所申请领取第二代居民身份证时，应该提前准备好相应的证件，一般只需要准备好户口本就行了，到了派出所后工作人员会根据情况帮忙进行办理。',
-                    },
-                    {
-                        likes: "133",
-                        discussion: "32",
-                        picture: '',
-                        content: '如果到了合适的年龄,是可以去户口所在地的派出所办理身份证的。那么,您知道怎么正确办理身份证吗?到户口所在地的派出所申请领取第二代居民身份证时，应该提前准备好相应的证件，一般只需要准备好户口本就行了，到了派出所后工作人员会根据情况帮忙进行办理。',
-                    },
-                    {
-                        likes: "13",
-                        discussion: "3",
-                        picture: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3849073968,2338614801&fm=26&gp=0.jpg',
-                        content: '如果到了合适的年龄,是可以去户口所在地的派出所办理身份证的。那么,您知道怎么正确办理身份证吗?到户口所在地的派出所申请领取第二代居民身份证时，应该提前准备好相应的证件，一般只需要准备好户口本就行了，到了派出所后工作人员会根据情况帮忙进行办理。',
-                    },
-                ],*/
+                titles: [],
                 chats: [{
                     chat_id: '',
                     content: '',
                     discussions: '',
                     likes: '',
                     picture: '',
-                    /*user_id: '',
-                    name: '',
-                    avatar: '',*/
+                    title: '',
                 }],
 
                 /* 我的信息 */
                 flag: 1,
                 flag2:false,
+                myOrder: [{
+                    dept_id: "",
+                    order_time: "",
+                    order_day: "",
+                }],
+                showReserve: false,
                 user: {
                     name1: '',
                     password1: '',
@@ -607,7 +607,9 @@
             }
         },
         mounted: function() {
+            this.getInformation();
             this.loadInfo();
+            this.getReservation();
         },
         methods: {
 
@@ -629,6 +631,10 @@
                         alert(res.data.msg);
                     } else {
                         this.chats = res.data.data.chats;
+                        this.titles = new Array(this.chats.length);
+                        for (let i = 0; i < this.chats.length; i++) {
+                            this.titles[i] = this.chats[i].title;
+                        }
                     }
                 }).catch((err) => {
                     alert(err);
@@ -638,7 +644,12 @@
 
             /* 部门业务 */
             toSearchResult() {
-                this.$router.push({ name: 'searchResult' });
+                let info = document.getElementById("info").value;
+                if (!info || info.length === 0) {
+                    this.isEmpty = true;
+                    return null;
+                }
+                this.$router.push({ name: 'searchResult' , params: {'info': info}});
             },
             toBusProcess(event) {
                 let busId = event.currentTarget.id;
@@ -649,11 +660,18 @@
             toNewChat() {
                 this.$router.push({ name: "newChat" });
             },
+            toChatFiltered() {
+                let title = document.getElementById("chatFilter").value;
+                if (title.length === 0) return null;
+                this.$router.push({ name: "chatFiltered", params: {"title": title} });
+            },
             toChat(event) {
                 let chatId = event.currentTarget.id;
                 this.$router.push({ name: 'chat', params: {'chatId': chatId} });
             },
-
+            customFilter (item, queryText) {
+                return item.indexOf(queryText) > -1
+            },
 
             /* 我的信息 */
             submit:function () {
@@ -699,6 +717,43 @@
                     alert(err);
                 })
             },
+            //获得预约信息
+            getReservation(){
+                let that = this;
+                reserveService.checkReservation(that.$store.state.userModule.userInfo.userId).then((res) => {
+                    if (res.data.code !== 200) {
+                        alert(res.data.msg);
+                        return null;
+                    }
+                    that.temp = res.data.myorder;
+                    for(let i=0; i<that.temp.length; i++){
+                        if(that.temp[i].order_time===1){
+                            that.temp[i].order_time="8:30-12:00";
+                        }else{
+                            that.temp[i].order_time="14:30-17:00";
+                        }
+                    }
+                    that.myOrder = that.temp;
+                }).catch((err) => {
+                    alert(err);
+                })
+            },
+            //取消预约
+            cancelReserve(event){
+                let that = this;
+                let deptId = event.currentTarget.id;
+                reserveService.cancelReservation(that.$store.state.userModule.userInfo.userId,deptId).then((res) => {
+                    if (res.data.code !== 200) {
+                        alert(res.data.msg);
+                        return null;
+                    }
+                    alert("取消成功");
+                    location.reload();
+                }).catch((err) => {
+                    alert(err);
+                })
+
+            },
             showInformation(){
                 this.flag2 = !this.flag2;
             }
@@ -710,6 +765,7 @@
     @import '../../../static/css/mymess.css'; /*input框*/
 
     #info{
+        caret-color: black;
         position: relative;
         left: 5px;
         width: 100%;
