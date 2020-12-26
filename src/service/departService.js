@@ -5,6 +5,11 @@ const getHotBusiness = () => {
     return goverRequest.get('businesses/getHot');
 };
 
+const getDepartment = (deptId) => {
+    return goverRequest.get('department/get/' + deptId);
+};
+
 export default {
     getHotBusiness,
+    getDepartment,
 };

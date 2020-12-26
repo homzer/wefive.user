@@ -103,7 +103,7 @@
    height: 30px;
    border-radius: 5px;
    background-color: transparent;
-} 
+}
 
 .input-control input:focus{
   border:2px #58E481 solid;

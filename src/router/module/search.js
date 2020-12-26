@@ -1,6 +1,6 @@
 const searchRouter = [
     {
-        path: '/searchResult',
+        path: '/searchResult/info=:info',
         name: 'searchResult',
         component: () => import('../../views/search/SearchResult.vue')
     },
