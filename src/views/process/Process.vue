@@ -1,82 +1,124 @@
 <template>
     <v-container onload="loadProcessOfBus()">
-        <v-toolbar flat color="cyan darken-2" dark>
-            <v-btn icon @click="back">
-                <v-icon>mdi-reply</v-icon>
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-toolbar-title>业务办理流程</v-toolbar-title>
+        <v-row justify="center">
+            <v-card max-width="500">
+                <v-toolbar flat color="cyan darken-2" dark>
+                    <v-btn icon @click="back">
+                        <v-icon>mdi-reply</v-icon>
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-toolbar-title>业务办理流程</v-toolbar-title>
 
-            <v-spacer></v-spacer>
-        </v-toolbar>
+                    <v-spacer></v-spacer>
+                </v-toolbar>
 
-        <template>
-            <v-stepper
+                <template>
+                    <v-stepper
 
-                    v-model="e6"
-                    vertical
-            >
-                <v-stepper-items
-                        v-for="(item, i) in processes"
-                        :key="i"
-                >
-                    <v-stepper-step
-                            :complete="e6 > i + 1"
-                            :step="i + 1"
-                            color="cyan darken-2"
+                            v-model="e6"
+                            vertical
                     >
-                        {{ item.title }}
-                    </v-stepper-step>
-                    <v-stepper-content
-                            :step="i + 1"
-                    >
-                        <v-card-subtitle>{{ item.content }}</v-card-subtitle>
-                        <v-row dense>
-                            <v-col
-                                    cols="12"
-                                    v-for="(m, index) in item.materials"
-                                    :key="index"
+                        <v-stepper-items
+                                v-for="(item, i) in processes"
+                                :key="i"
+                        >
+                            <v-stepper-step
+                                    :complete="e6 > i + 1"
+                                    :step="i + 1"
+                                    color="cyan darken-2"
                             >
-                                <v-card
-                                        flat
-                                        class="mb-1"
-                                        max-width="350"
+                                {{ item.title }}
+                            </v-stepper-step>
+                            <v-stepper-content
+                                    :step="i + 1"
+                            >
+                                <v-card-subtitle>{{ item.content }}</v-card-subtitle>
+                                <v-row dense>
+                                    <v-col
+                                            cols="12"
+                                            v-for="(m, index) in item.materials"
+                                            :key="index"
+                                    >
+                                        <v-card
+                                                flat
+                                                class="mb-1"
+                                                max-width="350"
+                                        >
+                                            <v-card-subtitle v-text="m.material_name"></v-card-subtitle>
+                                            <v-card-text v-text="m.description"></v-card-text>
+                                            <v-img :src="m.photo_url"></v-img>
+                                        </v-card>
+                                        <v-divider class="mt-3" color="black" v-if="index !== item.materials.length - 1"></v-divider>
+                                    </v-col>
+                                </v-row>
+                                <v-btn
+                                        color="cyan darken-2"
+                                        dark
+                                        @click="e6 += 1"
+                                        v-if="e6 !== processes.length"
                                 >
-                                    <v-card-subtitle v-text="m.material_name"></v-card-subtitle>
-                                    <v-card-text v-text="m.description"></v-card-text>
-                                    <v-img :src="m.photo_url"></v-img>
-                                </v-card>
-                                <v-divider class="mt-3" color="black" v-if="index !== item.materials.length - 1"></v-divider>
-                            </v-col>
-                        </v-row>
-                        <v-btn
-                                color="cyan darken-2"
-                                dark
-                                @click="e6 += 1"
-                                v-if="e6 !== processes.length"
+                                    下一步
+                                </v-btn>
+                                <v-btn
+                                        color="cyan darken-2"
+                                        dark
+                                        @click="e6 = 1"
+                                        v-if="e6 === processes.length"
+                                >
+                                    完成
+                                </v-btn>
+                                <v-btn
+                                        text
+                                        @click="e6 = e6 - 1"
+                                        v-if="e6 !== 1"
+                                >
+                                    返回
+                                </v-btn>
+                            </v-stepper-content>
+                        </v-stepper-items>
+                        <v-card
+                                class="mt-3"
+                                flat
                         >
-                            下一步
-                        </v-btn>
-                        <v-btn
-                                color="cyan darken-2"
-                                dark
-                                @click="e6 = 1"
-                                v-if="e6 === processes.length"
-                        >
-                            完成
-                        </v-btn>
-                        <v-btn
-                                text
-                                @click="e6 = e6 - 1"
-                                v-if="e6 !== 1"
-                        >
-                            返回
-                        </v-btn>
-                    </v-stepper-content>
-                </v-stepper-items>
+                            <v-card-text>
+                                有没有帮助到您？请在下面打上您认为合适的分数，根据您的反馈我们会完善得更好！
+                                <div class="text-center mt-1">
+                                    <v-rating
+                                            v-model="rating"
+                                            color="yellow darken-3"
+                                            background-color="grey darken-1"
+                                            half-increments
+                                    ></v-rating>
+                                </div>
+                            </v-card-text>
+                            <v-card-actions class="justify-space-between">
+                                <v-btn
+                                        color="cyan darken-2"
+                                        text
+                                        @click="snackbar = true"
+                                >
+                                    提价评价
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                        <v-snackbar
+                                v-model="snackbar"
+                                :timeout="2000"
+                                outlined
+                                color="success"
+                                bottom
+                        ><v-icon color="success">
+                            mdi-checkbox-marked-circle
+                        </v-icon>
+                            感谢您的反馈！
+                        </v-snackbar>
+                    </v-stepper>
 
-            </v-stepper>
-        </template>
+                </template>
+            </v-card>
+        </v-row>
+
+
     </v-container>
 </template>
 
@@ -88,6 +130,8 @@
         data () {
             return {
                 e6: 1,
+                rating: 4.5,
+                snackbar: false,
                 processes: [{
                     process_id: "",
                     bus_id: "",
@@ -102,50 +146,6 @@
                         material_name: "",
                     }],
                 }],
-                /*processes: [
-                    {
-                        title: "准备相关材料",
-                        picture: "https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00761-2475.jpg",
-                        material_name: "结婚证",
-                        description: "",
-                    },
-                    {
-                        title: "排队等候",
-                        picture: "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3467347491,3513291551&fm=26&gp=0.jpg",
-                        material_name: "结婚证",
-                        description: "",
-                    },
-                    {
-                        title: "到1号柜台办理手续",
-                        picture: "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3741226544,1067997984&fm=26&gp=0.jpg",
-                        material_name: "结婚证",
-                        description: "",
-                    },
-                    {
-                        title: "取回相应证件，办理结束",
-                        picture: "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2727107182,1715079255&fm=26&gp=0.jpg",
-                        material_name: "结婚证",
-                        description: "",
-                    },
-                ],*/
-                /*materials: [
-                    {
-                        material_id: '',
-                        photo_url: 'https://ns-strategy.cdn.bcebos.com/ns-strategy/upload/fc_big_pic/part-00761-2475.jpg',
-                    },
-                    {
-                        material_id: '',
-                        photo_url: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3467347491,3513291551&fm=26&gp=0.jpg',
-                    },
-                    {
-                        material_id: '',
-                        photo_url: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3741226544,1067997984&fm=26&gp=0.jpg',
-                    },
-                    {
-                        material_id: '',
-                        photo_url: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2727107182,1715079255&fm=26&gp=0.jpg',
-                    },
-                ],*/
             }
         },
         mounted: function() {
@@ -166,8 +166,12 @@
                 });
             },
 
+            ratingProcess() {
+
+            },
+
             back() {
-                this.$router.go(-1);
+                this.$router.push({ name: 'home', params: {'tab': "tabs-1"} });
             },
         },
     }

@@ -15,15 +15,21 @@ const routes = [
         component: () => import('../views/login/Init.vue')
     },
     {
-        path: '/newHome',
-        name: 'newHome',
+        path: '/home/tab=:tab',
+        name: 'home',
         // 元信息
         /*meta: {
           // true 代表这个路由需要认证
           auth: true,
         },*/
-        component: () => import('../views/home/NewHome.vue')
+        component: () => import('../views/home/Home.vue')
     },
+    {
+        path: '/road/deptId=:deptId',
+        name: 'road',
+        component: () => import('../views/road/Road.vue')
+    },
+
 
     ...searchRouter,
     ...userRouter,

@@ -31,7 +31,7 @@
         </v-form>
       </div>
 
-      <v-btn rounded color="cyan darken-2" width="50%" max-width="220" class="my-5" dark @click="SendLoginInfo">登录</v-btn>
+      <v-btn rounded color="cyan darken-2" width="50%" max-width="220"  dark @click="SendLoginInfo">登录</v-btn>
       <v-btn rounded color="cyan darken-2" width="50%" max-width="220" class="my-5" dark @click="back">返回</v-btn>
     </div>
   </div>
@@ -54,11 +54,11 @@
         },
         phoneRules: [
           v => !!v || '电话号码不能为空',
-          v => v.length === 11 || '电话号码长度不对',
+          v => v.length === 11 || '电话号码不规范',
         ],
         passwordRules: [
           v => !!v || '密码不能为空',
-          v => v.length > 6 || '密码长度不能小于6',
+          v => v.length >= 6 || '密码长度至少为6位',
         ],
       }
     },
@@ -87,7 +87,7 @@
           let user = that.user;
           // 本地储存用户信息和Token
           this.$store.dispatch('userModule/storeUserInfo', {user, token});
-          this.$router.push({ name: 'newHome' });
+          this.$router.push({ name: 'home' , params: { "tab": "tabs-1" }});
         }).catch((err) => {
           alert(err);
         })
@@ -167,7 +167,7 @@
     transition: all 0.5s;
   }
   .big-box{
-    background-image: url("https://i.loli.net/2020/12/19/ZHDdQ8Ca1eLoqwv.jpg");
+    /*background-image: url("https://i.loli.net/2020/12/19/ZHDdQ8Ca1eLoqwv.jpg");*/
     background-repeat: no-repeat;
     background-size: 100% 100%;
     float: bottom;
