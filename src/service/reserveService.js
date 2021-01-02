@@ -23,6 +23,11 @@ const checkPeople = (deptId,orderDay,orderTime) => {
     // 定义api，向后端发送请求
     return request.post('order/alert',{deptId, orderDay,orderTime});
 };
+//根据dept_id得dept_name
+const getName = (deptId) => {
+    // 定义api，向后端发送请求
+    return request.post('order/name?deptId='+deptId);
+};
 
 
 export default {
@@ -30,4 +35,5 @@ export default {
     cancelReservation,
     checkReservation,
     checkPeople,
+    getName
 };

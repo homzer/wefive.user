@@ -1,5 +1,5 @@
 <template >
-    <div class="background">
+    <div >
         <v-card-text class="text--primary">
             <h1 align="center" style="font-family: 楷体; margin-top: 100px;" >指尖武汉</h1>
             <h3 align="center" style="font-family: 楷体">指尖办理，方便你我</h3>
@@ -8,7 +8,7 @@
                 class="white--text align-end"
                 height="150px"
                 width="300px"
-                style="margin: auto;"
+                style="margin: 20px auto auto;"
                 color="darkgray"
                 src="https://i.loli.net/2020/12/06/i6DmWUEg15IBkn8.jpg"
         >
@@ -51,7 +51,7 @@
                 class="white&#45;&#45;text align-end"
                 height="40px"
                 width="95px"
-                style="margin: auto; margin-top: 233px"
+                style="margin: 50px auto auto;"
                 color="darkgray"
                 src="https://i.loli.net/2020/12/07/gTK2BV6y1JtoeOX.png"
         >

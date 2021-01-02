@@ -1,7 +1,7 @@
 <template>
     <v-container onload="loadInfo()">
         <v-row justify="center">
-            <v-card max-width="500" min-width="400">
+            <v-card max-width="500">
 
                 <!-- 导航栏 -->
                 <v-toolbar flat color="cyan darken-2" dark>
@@ -49,9 +49,86 @@
                     <v-tab-item value="tabs-1">
                         <!-- 图片+搜索栏 -->
                         <v-card flat>
+                            <!--<v-carousel
+                                    cycle
+                                    height="200"
+                                    hide-delimiter-background
+                                    :show-arrows="false"
+                                    hide-delimiters
+                            >
+                                <v-carousel-item>
+                                    <v-sheet
+                                            color="indigo"
+                                            height="100%"
+                                            style="background-image: url('https://i.picsum.photos/id/1075/1920/1080.jpg?hmac=XoHaZBtraAFA5A6u4sxS7Wg5mfE-F1RjIigrFXexwJY');"
+                                    >
+                                        <v-row
+                                                class="fill-height"
+                                                align="center"
+                                                justify="center"
+                                        >
+                                            <div class="display-3">
+                                                Wefive.government
+                                            </div>
+                                        </v-row>
+                                    </v-sheet>
+                                </v-carousel-item>
+                                <v-carousel-item>
+                                    <v-sheet
+                                            color="warning"
+                                            height="100%"
+                                            style="background-image: url('http://5b0988e595225.cdn.sohucs.com/images/20180607/b9e8dd1a30df4d6ab7929af7b54af725.jpeg');"
+                                    >
+                                        <v-row
+                                                class="fill-height"
+                                                align="center"
+                                                justify="center"
+                                        >
+                                            <div class="display-3">
+
+                                            </div>
+                                        </v-row>
+                                    </v-sheet>
+                                </v-carousel-item>
+                            </v-carousel>
+                            <v-row justify="center">
+                                <v-spacer></v-spacer>
+                                &lt;!&ndash; 输入框 &ndash;&gt;
+                                <v-col cols="8">
+                                    <v-autocomplete
+                                            color="cyan darken-2"
+                                            background-color="white"
+                                            :items="searchList"
+                                            hide-details
+                                            prepend-inner-icon="mdi-magnify"
+                                            single-line
+                                            label="搜索部门或业务"
+                                            outlined
+                                            dense
+                                            id="info"
+                                            :filter="customFilter"
+                                    ></v-autocomplete>
+                                    &lt;!&ndash;<label for="info"></label>
+                                    <input
+                                            v-model="inputValue"
+                                            autofocus="autofocus"
+                                            autocomplete="off"
+                                            placeholder="搜索业务和部门"
+                                            class="new-todo ml-3"
+                                            id="info"
+                                    />&ndash;&gt;
+                                </v-col>
+                                &lt;!&ndash; 搜索按钮 &ndash;&gt;
+                                <v-col cols="3">
+                                    <v-btn id="btn1" color="cyan darken-2" @click="toSearchResult">
+                                        搜索
+                                    </v-btn>
+                                </v-col>
+                                <v-spacer></v-spacer>
+                            </v-row>-->
                             <v-img
                                     class="white--text align-end"
-                                    height="300px"
+                                    height="280px"
                                     width="100%"
                                     min-width="300"
                                     color="darkgray"
@@ -60,8 +137,21 @@
                                 <v-row justify="center">
                                     <v-spacer></v-spacer>
                                     <!-- 输入框 -->
-                                    <v-col cols="9">
-                                        <label for="info"></label>
+                                    <v-col cols="8">
+                                        <v-autocomplete
+                                                color="cyan darken-2"
+                                                background-color="white"
+                                                :items="searchList"
+                                                hide-details
+                                                prepend-inner-icon="mdi-magnify"
+                                                single-line
+                                                label="搜索部门或业务"
+                                                outlined
+                                                dense
+                                                id="info"
+                                                :filter="customFilter"
+                                        ></v-autocomplete>
+                                        <!--<label for="info"></label>
                                         <input
                                                 v-model="inputValue"
                                                 autofocus="autofocus"
@@ -69,12 +159,12 @@
                                                 placeholder="搜索业务和部门"
                                                 class="new-todo ml-3"
                                                 id="info"
-                                        />
+                                        />-->
                                     </v-col>
                                     <!-- 搜索按钮 -->
                                     <v-col cols="3">
                                         <v-btn id="btn1" color="cyan darken-2" @click="toSearchResult">
-                                            查询
+                                            搜索
                                         </v-btn>
                                     </v-col>
                                     <v-spacer></v-spacer>
@@ -285,13 +375,9 @@
                                                                         mdi-heart-outline
                                                                     </v-icon>
                                                                     <span class="subheading mr-2">{{ item.likes }}</span>
-                                                                    <v-btn
-                                                                            icon
-                                                                    >
-                                                                        <v-icon>
-                                                                            mdi-message-outline
-                                                                        </v-icon>
-                                                                    </v-btn>
+                                                                    <v-icon>
+                                                                        mdi-message-outline
+                                                                    </v-icon>
                                                                     <span class="subheading mr-2">{{ item.discussions }}</span>
                                                                 </v-col>
                                                             </v-row>
@@ -399,7 +485,7 @@
                                                     <!--这里写预约信息-->
                                                     <div class="mymess" v-show="showReserve" v-for="(item,i) in
                                                     myOrder" :key="i">
-                                                        &nbsp;&nbsp;{{item.dept_id}}  {{item.order_day}}
+                                                        &nbsp;&nbsp;{{item.deptName}}  {{item.order_day}}
                                                         {{item.order_time}}
                                                         <v-btn
                                                                 color="cyan darken-2"
@@ -496,11 +582,14 @@
         data () {
             return {
                 isActive: false,
-                tabs: "tabs-2",
+                tabs: "tabs-1",
                 /* 搜索主页 */
                 inputValue: "",
                 showDetail: false,
                 isEmpty: false,
+                searchList: [],
+                busList: [],
+                deptList: [],
 
                 businesses: [
                     {
@@ -520,40 +609,26 @@
                         phone: '18088012342',
                         work_time: '上午8:30-12:00；下午2:30-5:30',
                         dept_id: "",
-                        picture: 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2873493749,1373290045&fm=26&gp=0.jpg',
-                        dept_name: '青山区民政局',
-                        location: '武汉市青山区临江大道868号',
-
-                        bus_id: '',
-                        bus_name: '办理房产证',
-                        description: '购房者应要求销售单位出示该项目的《国有土地使用证》、《建设用地规划许可证》',
-                        cost: '0',
-                    },
-                    {
-                        phone: '18088012342 15546399342',
-                        work_time: '上午8:30-12:00；下午2:30-5:30',
-                        dept_id: "",
-                        picture: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2537935077,2996162810&fm=26&gp=0.jpg',
-                        dept_name: '东湖新技术开发区管委会社会发展局',
-                        location: '黄陂区前川街百秀街183号',
-
-                        bus_id: '',
-                        bus_name: '办理结婚证',
-                        description: '结婚年龄:男年满22周岁.女年满20周岁',
-                        requirement: '需要适当的结婚年龄',
-                        cost: '50',
-                    },
-                    {
-                        phone: '18088012342 15546399342',
-                        work_time: '上午8:30-12:00；下午2:30-5:30',
-                        dept_id: "",
-                        picture: '',
-                        dept_name: '洪山区市政府与东湖新技术开发区管委会社会发展局',
+                        picture: 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2723534203,3190979793&fm=26&gp=0.jpg',
+                        dept_name: '洪山区市政府',
                         location: '武汉市集贤路特1号华通花园2号楼',
 
                         bus_id: '',
-                        bus_name: '办理营业执照',
-                        description: '办理营业执照所需时间 材料齐全并审查通过后,办理营业执照需5个工作日,外资企业办理营业执照需10个工作日。',
+                        bus_name: '办理身份证',
+                        description: '年满16周岁的中国公民,应当向常住户口所在地的户口登记机关履行申领居民身份证手续。',
+                        cost: '20',
+                    },
+                    {
+                        phone: '18088012342',
+                        work_time: '上午8:30-12:00；下午2:30-5:30',
+                        dept_id: "",
+                        picture: 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2723534203,3190979793&fm=26&gp=0.jpg',
+                        dept_name: '洪山区市政府',
+                        location: '武汉市集贤路特1号华通花园2号楼',
+
+                        bus_id: '',
+                        bus_name: '办理身份证',
+                        description: '年满16周岁的中国公民,应当向常住户口所在地的户口登记机关履行申领居民身份证手续。',
                         cost: '20',
                     },
                 ],
@@ -587,10 +662,14 @@
                 flag: 1,
                 flag2:false,
                 myOrder: [{
-                    dept_id: "",
-                    order_time: "",
-                    order_day: "",
+                    dept_id:'',
+                    order_time:'',
+                    order_day:'',
+                    deptName:'',
+                    order_id: '',
+                    user_id: '',
                 }],
+
                 showReserve: false,
                 user: {
                     name1: '',
@@ -614,12 +693,28 @@
         methods: {
 
             loadInfo() {
+                this.tabs = this.$route.params.tab;
                 // 获取热门业务
                 businessService.getHotBusiness().then((res) => {
                     if (res.data.code !== 200) {
                         alert(res.data.msg);
                     } else {
                         this.businesses = res.data.data.businesses;
+                        this.busList = new Array(this.businesses.length);
+                        this.deptList = new Array(this.businesses.length);
+                        this.searchList = new Array(this.businesses.length*2);
+                        let j = 0;
+                        for (let i = 0; i < this.businesses.length; i++) {
+                            this.busList[i] = this.businesses[i].bus_name;
+                            this.deptList[i] = this.businesses[i].dept_name;
+                            this.searchList[j++] = this.deptList[i];
+                            this.searchList[j++] = this.busList[i];
+                        }
+                        /*this.searchList = new Array(this.busList.length + this.deptList.length);
+                        for (let i = 0; i < this.busList.length; i++) {
+                            this.searchList.concat(this.busList[i]);
+                            this.searchList.add(this.deptList[i]);
+                        }*/
                     }
                 }).catch((err) => {
                     alert(err);
@@ -642,8 +737,10 @@
 
             },
 
-            /* 部门业务 */
+            /* 搜索 */
             toSearchResult() {
+                /*if (this.searchList.length === 0) return null;
+                let info = this.searchList[0];*/
                 let info = document.getElementById("info").value;
                 if (!info || info.length === 0) {
                     this.isEmpty = true;
@@ -717,7 +814,7 @@
                     alert(err);
                 })
             },
-            //获得预约信息
+
             getReservation(){
                 let that = this;
                 reserveService.checkReservation(that.$store.state.userModule.userInfo.userId).then((res) => {
@@ -725,15 +822,14 @@
                         alert(res.data.msg);
                         return null;
                     }
-                    that.temp = res.data.myorder;
-                    for(let i=0; i<that.temp.length; i++){
-                        if(that.temp[i].order_time===1){
-                            that.temp[i].order_time="8:30-12:00";
-                        }else{
-                            that.temp[i].order_time="14:30-17:00";
+                    this.myOrder = res.data.myorder;
+                    for (let i = 0; i < this.myOrder.length; i++) {
+                        if (this.myOrder[i].order_time === 1) {
+                            this.myOrder[i].order_time = "8:30-12:00";
+                        } else {
+                            this.myOrder[i].order_time = "14:30-17:00";
                         }
                     }
-                    that.myOrder = that.temp;
                 }).catch((err) => {
                     alert(err);
                 })
@@ -795,7 +891,7 @@
         margin-top: 20px;
         height: 45px;
         font-size: 25px;
-        background-color: #777777;
+        background-color: white;
     }
 
 </style>

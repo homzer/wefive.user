@@ -100,7 +100,7 @@
                 })
             },
             back() {
-                this.$router.go(-1);
+                this.$router.push({ name: 'home', params: {'tab': "tabs-2"} });
             },
             toChat(event) {
                 let chatId = event.currentTarget.id;

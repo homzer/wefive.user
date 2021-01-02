@@ -177,7 +177,7 @@
     transition: all 0.5s;
   }
   .big-box{
-    background-image: url("https://i.loli.net/2020/12/19/ZHDdQ8Ca1eLoqwv.jpg");
+    /*background-image: url("https://i.loli.net/2020/12/19/ZHDdQ8Ca1eLoqwv.jpg");*/
     background-repeat: no-repeat;
     background-size: 100% 100%;
     float: bottom;

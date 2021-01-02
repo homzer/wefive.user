@@ -1,150 +1,201 @@
 <template>
   <v-container onload="loadDepartment()">
-    <v-toolbar flat color="cyan darken-2" dark>
-      <v-btn icon @click="back">
-        <v-icon>mdi-reply</v-icon>
-      </v-btn>
-      <v-spacer></v-spacer>
-      <v-toolbar-title>欢迎使用指尖武汉</v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-toolbar>
+    <v-row justify="center">
+      <v-card max-width="500">
+        <v-toolbar flat color="cyan darken-2" dark>
+          <v-btn icon @click="back">
+            <v-icon>mdi-reply</v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-toolbar-title>欢迎使用指尖武汉</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
 
-    <v-card flat>
-      <template>
-        <v-card
-            width="100%"
-            class="mx-auto"
-        >
-
-
-          <v-row dense>
-            <v-col
-                cols="12"
+        <v-card flat>
+          <template>
+            <v-card
+                    width="100%"
+                    class="mx-auto"
             >
-              <v-card flat :id="department.dept_id">
-                <div class="d-flex flex-no-wrap justify-space-between">
-                  <div>
-                    <v-card-title
-                        v-text="department.dept_name"
-                    ></v-card-title>
-                    <v-card-subtitle v-text="department.location"></v-card-subtitle>
+              <v-row dense>
+                <v-col
+                        cols="12"
+                >
+                  <v-card flat :id="department.dept_id">
+                    <div class="d-flex flex-no-wrap justify-space-between">
+                      <div>
+                        <v-card-title
+                                v-text="department.dept_name"
+                        ></v-card-title>
+                        <v-card-subtitle v-text="department.location"></v-card-subtitle>
+                      </div>
+
+                      <v-avatar
+                              class="ma-3"
+                              size="100"
+                              tile
+                              v-if="department.picture"
+                      >
+                        <v-img :src="department.picture"></v-img>
+                      </v-avatar>
+                    </div>
+
                     <v-card-subtitle v-text="department.description"></v-card-subtitle>
+
+                  </v-card>
+
+                  <v-card-actions>
+                    <v-btn
+                            color="cyan darken-2"
+                            large
+                            dark
+                            width="140"
+                            @click="toRoad"
+                    >
+                      路线详情
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                            color="cyan darken-2"
+                            @click=" show = !show"
+                            large
+                            dark
+                            width="140"
+                    >
+                      我要预约
+                    </v-btn>
+                  </v-card-actions>
+                  <div v-show="show" align="center">
+                    <label for="meeting" style="font-family: 黑体">预约时间:  </label>
+                    <input id="meeting" type="date" value="" style="border: 2px solid #c4c7ce; height: 38px;"/>
+                    <br>
+                    <input type="radio" v-model="first" value="morn">
+                    <label >8:30-12:00</label>
+                    <input type="radio" v-model="first" value="noon"/>
+                    <label >14:30-17:00</label>
+
+                    <v-btn
+                            color="cyan darken-2"
+                            @click="reserve"
+                            dark
+                            width="18"
+                            height="25"
+                            style="float: right"
+                    >
+                      提交
+                    </v-btn>
                   </div>
-
-                  <v-avatar
-                      class="ma-3"
-                      size="125"
-                      tile
-                      v-if="department.picture"
-                  >
-                    <v-img :src="department.picture"></v-img>
-                  </v-avatar>
-                </div>
-
-              </v-card>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                        color="cyan darken-2"
-                        @click=" show === i ? show = -1 : show = i "
-                        large
-                        dark
-                        width="180"
-                >
-                  我要预约
-                </v-btn>
-              </v-card-actions>
-              <div v-show="show" align="center">
-                <label for="meeting" style="font-family: 黑体">预约时间:  </label>
-                <input id="meeting" type="date" value="" style="border: 2px solid #c4c7ce; height: 38px;"/>
-                <br>
-                <input type="radio" v-model="first" value="morn">
-                <label >8:30-12:00</label>
-                <input type="radio" v-model="first" value="noon"/>
-                <label >14:30-17:00</label>
-
-                <v-btn
-                        color="cyan darken-2"
-                        @click="reserve"
-                        dark
-                        width="18"
-                        height="25"
-                        style="float: right"
-                >
-                  提交
-                </v-btn>
-              </div>
-            </v-col>
-          </v-row>
+                </v-col>
+              </v-row>
+            </v-card>
+          </template>
         </v-card>
-      </template>
-    </v-card>
 
-    <!-- 折线图 -->
-    <v-card class="mt-2" color="cyan darken-2" dark>
-      <v-card-title>人数统计</v-card-title>
-      <v-sheet
-              class="v-sheet--offset mx-auto align-end"
-              elevation="2"
-              color="white"
-      >
-        <v-sparkline
-                auto-draw
-                :labels="labels"
-                :value="value"
+        <!-- 折线图 -->
+        <v-card class="mt-2" color="cyan darken-2" dark>
+          <v-card-title>今日预约及办理人数统计</v-card-title>
+          <v-sheet
+                  class="v-sheet--offset mx-auto align-end"
+                  elevation="2"
+                  color="white"
+          >
+            <v-sparkline
+                    auto-draw
+                    :labels="labels"
+                    :value="value"
+                    color="cyan darken-2"
+                    line-width="2"
+                    padding="16"
+            ></v-sparkline>
+          </v-sheet>
+        </v-card>
+
+        <div class="commentBox" flat color="cyan darken-2">
+          <h3 style="margin-top: 10px">部门咨询</h3>
+          <div class="text-area">
+            <v-textarea
+                    class="mt-5"
+                    auto-grow
+                    placeholder="我来说一句..."
+                    rows="1"
+                    outlined
+                    color="cyan darken-2"
+                    dense
+                    value=""
+                    id="comment"
+                    autocomplete="off"
+            ></v-textarea>
+          </div>
+          <v-btn class="butt ma-2"  width="45%" @click="sendComment">发表</v-btn>
+          <v-btn class="butt ma-2" width="45%" @click="cancelComment">取消</v-btn>
+        </div>
+        <v-row v-if="showComment">
+          <v-col
+                  v-for="(item, index) in list"
+                  :key="index"
+                  cols="12"
+          >
+            <v-divider></v-divider>
+            <v-card flat>
+              <v-list two-line dense>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      <v-chip
+                              class="mb-1"
+                              close
+                              color="cyan darken-2"
+                              outlined
+                      >
+                        {{item.content}}
+                      </v-chip>
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      <v-chip
+                              color="green"
+                              outlined
+                              v-if="item.reply"
+                      >
+                        {{item.reply}}
+                      </v-chip>
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-snackbar
+                v-model="notCompleted"
+                :timeout="2000"
+                text
                 color="cyan darken-2"
-                line-width="2"
-                padding="16"
-        ></v-sparkline>
-      </v-sheet>
-    </v-card>
-
-    <div class="commentBox" flat color="cyan darken-2">
-      <h3 style="margin-top: 10px">发表言论</h3>
-      <div class="text-area">
-        <label>
-          <input
-              v-model="comments"
-              style="height: 60px;width: 100%"
-              placeholder="请输入..."
-          />
-        </label>
-      </div>
-      <button class="butt" @click="addComment">发表</button>
-      <button class="butt" @click="cancelComment">取消</button>
-    </div>
-    <v-row>
-      <v-col
-          v-for="(item, index) in usersDepartTalks"
-          :key="index"
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
-      >
-        <v-card>
-          <v-list three-line>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  <div v-text="item.user_say"></div>
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  <div v-text="item.depart_say"></div>
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card>
-      </v-col>
+                bottom
+        >
+          您还没有输入任何内容哦！
+        </v-snackbar>
+        <v-snackbar
+                v-model="snackbar"
+                :timeout="2000"
+                outlined
+                color="success"
+                text
+        ><v-icon color="success">
+          mdi-checkbox-marked-circle
+        </v-icon>
+          感谢您的反馈！
+        </v-snackbar>
+      </v-card>
     </v-row>
+
   </v-container>
 </template>
 
 <script>
 import departService from "../../service/departService";
 import reserveService from "../../service/reserveService";
+import commentService from "../../service/commentService";
+import roadService from "../../service/roadService";
 
 export default {
   name: "DepartComment",
@@ -160,14 +211,14 @@ export default {
       '9pm',
     ],
     value: [
-      200,
-      675,
-      410,
-      390,
-      310,
-      460,
-      250,
-      240,
+      0,
+      0,
+      4,
+      22,
+      12,
+      8,
+      13,
+      6,
     ],
 
 
@@ -175,6 +226,8 @@ export default {
     selected: [2],
     active: false,
     show: false,
+    showComment : false,
+    notCompleted: false,
     first: '',
     department:[
       {
@@ -199,7 +252,17 @@ export default {
         user_say:'请问我什么时候可以去？',
         depart_say:'亲是这样子的，您可以在5点之前到哦！',
       },
-    ]
+    ],
+
+    list: [{
+        commentId: '',
+      userId: '',
+      deptId: '',
+      busId: '',
+      content: "",
+      reply: '',
+    }],
+
   }),
   mounted: function() {
     this.loadDepartment();
@@ -213,11 +276,55 @@ export default {
           } else {
             this.department = res.data.data.department;
           }
-        })
+        }).catch((err) => {
+          alert(err);
+        });
+      let userId = this.$store.state.userModule.userInfo.userId;
+        commentService.getMyComment(deptId, userId).then((res) => {
+          if (res.data.code !== 200) {
+            alert(res.data.msg);
+          } else {
+            this.list = res.data.page.list;
+            this.showComment = true;
+          }
+        }).catch((err) => {
+          alert(err);
+        });
+    },
+    sendComment() {
+      let content = document.getElementById("comment").value;
+      let deptId = this.$route.params.deptId;
+      let userId = this.$store.state.userModule.userInfo.userId;
+      let reply = "";
+      let busId = "";
+      if (content.length === 0) {
+        this.notCompleted = true;
+        return null;
+      }
+      commentService.sendComment(content, deptId, userId, busId, reply).then((res) => {
+        if(res.data.code !==200) {
+          alert(res.data.msg);
+        } else {
+          location.reload();
+        }
+      })
+    },
+    toRoad() {
+      let deptId = this.$route.params.deptId;
+      roadService.getRoad(deptId).then((res) => {
+        if (res.data.code !== 200) {
+          alert(res.data.msg);
+        }
+        console.log(res.data);
+      }).catch((err) => {
+        alert(err);
+      });
+      //this.$router.push({name: 'road', params: {"deptId": deptId}});
     },
     //预约
     reserve(){
       const date = document.getElementById("meeting").value;
+      let deptId = this.$route.params.deptId;
       if(date===""){
         alert("请选择日期!");
         return;
@@ -240,7 +347,7 @@ export default {
         t = 1;
       }
       let that = this;
-      reserveService.checkPeople(4, date,t).then((res) => {
+      reserveService.checkPeople(deptId, date,t).then((res) => {
         if (res.data.code !== 200) {
           alert(res.data.msg);
           return null;
@@ -248,13 +355,14 @@ export default {
         const b = confirm("现在已经预约" + res.data.nowpeople + "人\n确定要预约吗");
 
         if(b===true){
-          reserveService.reservation(that.$store.state.userModule.userInfo.userId,4,
+          reserveService.reservation(that.$store.state.userModule.userInfo.userId,deptId,
                   date,t).then((res) => {
             if (res.data.code !== 200) {
               alert(res.data.msg);
               return null;
             }
-
+            alert("恭喜你预约成功！");
+            location.reload();
           }).catch((err) => {
             alert(err);
           })
