@@ -1,144 +1,135 @@
 <template>
     <v-container onload="getSearchResult()" >
-        <v-row justify="center">
-            <v-card width="500">
-                <v-toolbar flat color="cyan darken-2" dark>
-                    <v-btn icon @click="back">
-                        <v-icon>mdi-reply</v-icon>
-                    </v-btn>
-                    <v-spacer></v-spacer>
-                    <v-toolbar-title>欢迎使用指尖武汉</v-toolbar-title>
+        <v-toolbar flat color="cyan darken-2" dark>
+            <v-btn icon @click="back">
+                <v-icon>mdi-reply</v-icon>
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-toolbar-title>欢迎使用指尖武汉</v-toolbar-title>
 
-                    <v-spacer></v-spacer>
-                </v-toolbar>
-                <v-progress-linear
-                        v-if="!show"
-                        indeterminate
-                        height="4"
-                        color="cyan darken-1"
-                ></v-progress-linear>
+            <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-progress-linear
+                v-if="!show"
+                indeterminate
+                height="4"
+                color="cyan darken-1"
+        ></v-progress-linear>
 
-                <v-container v-if="show">
+        <v-container v-if="show">
 
-                    <v-card
-                            class="pa-4"
-                            flat
-                            height="200"
-                            img="https://cdn.vuetifyjs.com/images/toolbar/map.jpg"
-                    >
-                    </v-card>
-
-                    <v-card>
-                        <template>
-                            <v-card
-                                    class="mx-auto mt-3"
-                            >
-                                <v-toolbar
-                                        color="cyan darken-2"
-                                        dark
-                                >
-                                    <v-toolbar-title>离我最近部门</v-toolbar-title>
-
-                                    <v-spacer></v-spacer>
-
-                                    <v-btn icon>
-                                        <v-icon>mdi-magnify</v-icon>
-                                    </v-btn>
-
-                                    <v-btn icon>
-                                        <v-icon>mdi-checkbox-marked-circle</v-icon>
-                                    </v-btn>
-                                </v-toolbar>
-
-                                <v-list two-line>
-                                    <v-list-item-group
-                                            v-model="selected"
-                                            active-class="cyan--text"
-                                    >
-                                        <template v-for="(item, index) in departments">
-                                            <v-list-item :key="item.title" :id="item.deptId" @click="toDepartComment">
-                                                <template>
-                                                    <v-list-item-content>
-                                                        <v-list-item-title v-text="item.deptName"></v-list-item-title>
-
-                                                        <v-list-item-subtitle
-                                                                class="text--primary"
-                                                                v-text="item.location"
-                                                        ></v-list-item-subtitle>
-
-                                                        <v-list-item-subtitle v-text="item.description"></v-list-item-subtitle>
-                                                    </v-list-item-content>
-
-                                                    <v-list-item-action>
-                                                        <v-list-item-action-text>
-                                                            <v-chip
-                                                                    text-color="white"
-                                                                    color="cyan darken-2"
-                                                            >
-                                                                <v-icon
-                                                                        left
-                                                                >
-                                                                    mdi-clock-outline
-                                                                </v-icon>
-                                                                {{item.mintime}}
-                                                            </v-chip>
-                                                        </v-list-item-action-text>
-                                                    </v-list-item-action>
-                                                </template>
-                                            </v-list-item>
-
-                                            <v-divider
-                                                    v-if="index < departments.length - 1"
-                                                    :key="index"
-                                            ></v-divider>
-                                        </template>
-                                    </v-list-item-group>
-                                </v-list>
-                            </v-card>
-                        </template>
-
-                        <v-divider></v-divider>
-                        <!--<template>
-                            <v-card
-                                    class="mx-auto mt-3"
-                                    flat
-                            >
-                                <v-toolbar>
-                                    <v-toolbar-title>业务匹配结果</v-toolbar-title>
-                                    <v-spacer></v-spacer>
-                                </v-toolbar>
-
-                                <v-list two-line>
-                                    <v-list-item-group
-                                            active-class="cyan&#45;&#45;text"
-                                    >
-                                        <template v-for="(item, index) in businesses">
-                                            <v-list-item :key="item.bus_name" :id="item.bus_id" @click="toDepartComment">
-                                                <template>
-                                                    <v-list-item-content>
-                                                        <v-list-item-subtitle v-text="item.description"></v-list-item-subtitle>
-                                                    </v-list-item-content>
-                                                </template>
-                                            </v-list-item>
-
-                                            <v-divider
-                                                    v-if="index < businesses.length - 1"
-                                                    :key="index"
-                                            ></v-divider>
-                                        </template>
-                                    </v-list-item-group>
-                                </v-list>
-                            </v-card>
-                        </template>-->
-                    </v-card>
-                </v-container>
+            <v-card
+                    class="pa-4"
+                    flat
+                    height="200"
+                    img="https://cdn.vuetifyjs.com/images/toolbar/map.jpg"
+            >
             </v-card>
-        </v-row>
 
+            <v-card>
+                <template>
+                    <v-card
+                            class="mx-auto mt-3"
+                    >
+                        <v-toolbar
+                                color="cyan darken-2"
+                                dark
+                        >
+                            <v-toolbar-title>离我最近部门</v-toolbar-title>
 
+                            <v-spacer></v-spacer>
 
+                            <v-btn icon>
+                                <v-icon>mdi-magnify</v-icon>
+                            </v-btn>
 
+                            <v-btn icon>
+                                <v-icon>mdi-checkbox-marked-circle</v-icon>
+                            </v-btn>
+                        </v-toolbar>
 
+                        <v-list two-line>
+                            <v-list-item-group
+                                    v-model="selected"
+                                    active-class="cyan--text"
+                            >
+                                <template v-for="(item, index) in departments">
+                                    <v-list-item :key="item.title" :id="item.deptId" @click="toDepartComment">
+                                        <template>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="item.deptName"></v-list-item-title>
+
+                                                <v-list-item-subtitle
+                                                        class="text--primary"
+                                                        v-text="item.location"
+                                                ></v-list-item-subtitle>
+
+                                                <v-list-item-subtitle v-text="item.description"></v-list-item-subtitle>
+                                            </v-list-item-content>
+
+                                            <v-list-item-action>
+                                                <v-list-item-action-text>
+                                                    <v-chip
+                                                            text-color="white"
+                                                            color="cyan darken-2"
+                                                    >
+                                                        <v-icon
+                                                                left
+                                                        >
+                                                            mdi-clock-outline
+                                                        </v-icon>
+                                                        {{item.mintime}}
+                                                    </v-chip>
+                                                </v-list-item-action-text>
+                                            </v-list-item-action>
+                                        </template>
+                                    </v-list-item>
+
+                                    <v-divider
+                                            v-if="index < departments.length - 1"
+                                            :key="index"
+                                    ></v-divider>
+                                </template>
+                            </v-list-item-group>
+                        </v-list>
+                    </v-card>
+                </template>
+
+                <v-divider></v-divider>
+                <!--<template>
+                    <v-card
+                            class="mx-auto mt-3"
+                            flat
+                    >
+                        <v-toolbar>
+                            <v-toolbar-title>业务匹配结果</v-toolbar-title>
+                            <v-spacer></v-spacer>
+                        </v-toolbar>
+
+                        <v-list two-line>
+                            <v-list-item-group
+                                    active-class="cyan&#45;&#45;text"
+                            >
+                                <template v-for="(item, index) in businesses">
+                                    <v-list-item :key="item.bus_name" :id="item.bus_id" @click="toDepartComment">
+                                        <template>
+                                            <v-list-item-content>
+                                                <v-list-item-subtitle v-text="item.description"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </template>
+                                    </v-list-item>
+
+                                    <v-divider
+                                            v-if="index < businesses.length - 1"
+                                            :key="index"
+                                    ></v-divider>
+                                </template>
+                            </v-list-item-group>
+                        </v-list>
+                    </v-card>
+                </template>-->
+            </v-card>
+        </v-container>
     </v-container>
 </template>
 

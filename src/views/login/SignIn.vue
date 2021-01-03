@@ -1,40 +1,45 @@
 <template>
-  <div class="big-box">
-    <div class="big-contain">
-      <div class="btitle">账号登录</div>
-      <div class="bform">
-        <v-form v-model="valid">
-          <v-text-field
-                  label=""
-                  placeholder="用户名(电话号码)"
-                  outlined
-                  value=""
-                  id="phone"
-                  dense
-                  single-line
-                  :rules="phoneRules"
-          ></v-text-field>
-          <!--<v-text-field label="用户名(电话号码)" value="" id="phone" :rules="phoneRules"></v-text-field>-->
-          <v-text-field
-                  :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                  :rules="passwordRules"
-                  :type="show ? 'text' : 'password'"
-                  name="password"
-                  id="password"
-                  label="密码"
-                  value=""
-                  @click:append="show = !show"
-                  single-line
-                  outlined
-                  dense
-          ></v-text-field>
-        </v-form>
-      </div>
+  <v-row justify="center">
+    <v-card width="400" height="660" class="mt-8">
+      <div class="big-box">
+        <div class="big-contain">
+          <div class="btitle">账号登录</div>
+          <div class="bform">
+            <v-form v-model="valid">
+              <v-text-field
+                      label=""
+                      placeholder="用户名(电话号码)"
+                      outlined
+                      value=""
+                      id="phone"
+                      dense
+                      single-line
+                      :rules="phoneRules"
+              ></v-text-field>
+              <!--<v-text-field label="用户名(电话号码)" value="" id="phone" :rules="phoneRules"></v-text-field>-->
+              <v-text-field
+                      :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                      :rules="passwordRules"
+                      :type="show ? 'text' : 'password'"
+                      name="password"
+                      id="password"
+                      label="密码"
+                      value=""
+                      @click:append="show = !show"
+                      single-line
+                      outlined
+                      dense
+              ></v-text-field>
+            </v-form>
+          </div>
 
-      <v-btn rounded color="cyan darken-2" width="50%" max-width="220"  dark @click="SendLoginInfo">登录</v-btn>
-      <v-btn rounded color="cyan darken-2" width="50%" max-width="220" class="my-5" dark @click="back">返回</v-btn>
-    </div>
-  </div>
+          <v-btn rounded color="cyan darken-2" width="50%" max-width="220"  dark @click="SendLoginInfo">登录</v-btn>
+          <v-btn rounded color="cyan darken-2" width="50%" max-width="220" class="my-5" dark @click="back">返回</v-btn>
+        </div>
+      </div>
+    </v-card>
+  </v-row>
+
 </template>
 
 <script>
