@@ -40,7 +40,12 @@
       </v-toolbar>
     </v-card>-->
     <v-main>
-      <router-view/>
+      <v-row justify="center">
+        <v-card width="500" flat>
+          <router-view/>
+        </v-card>
+      </v-row>
+
     </v-main>
   </v-app>
 </template>

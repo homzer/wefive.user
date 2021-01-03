@@ -1,564 +1,500 @@
 <template>
     <v-container onload="loadInfo()">
-        <v-row justify="center">
-            <v-card max-width="500">
+        <!-- 导航栏 -->
+        <v-toolbar flat color="cyan darken-2" dark>
 
-                <!-- 导航栏 -->
-                <v-toolbar flat color="cyan darken-2" dark>
+            <v-spacer></v-spacer>
+            <v-toolbar-title>欢迎使用指尖武汉</v-toolbar-title>
 
-                    <v-spacer></v-spacer>
-                    <v-toolbar-title>欢迎使用指尖武汉</v-toolbar-title>
+            <v-spacer></v-spacer>
 
-                    <v-spacer></v-spacer>
+            <template v-slot:extension>
+                <v-tabs
+                        v-model="tabs"
+                        fixed-tabs
+                        background-color="cyan darken-2"
+                >
+                    <v-tabs-slider color="cyan darken-2"></v-tabs-slider>
+                    <v-tab
+                            href="#tabs-1"
+                    >
+                        <v-icon>mdi-magnify</v-icon>
+                        搜索
+                    </v-tab>
 
-                    <template v-slot:extension>
-                        <v-tabs
-                                v-model="tabs"
-                                fixed-tabs
-                                background-color="cyan darken-2"
+                    <v-tab
+                            href="#tabs-2"
+                    >
+                        <v-icon>mdi-message</v-icon>
+                        交流
+                    </v-tab>
+
+                    <v-tab
+                            href="#tabs-3"
+                    >
+                        <v-icon>mdi-account-box</v-icon>
+                        我的
+                    </v-tab>
+                </v-tabs>
+            </template>
+        </v-toolbar>
+
+        <!-- 内容页 -->
+        <v-tabs-items v-model="tabs">
+
+            <!-- 搜索主界面 -->
+            <v-tab-item value="tabs-1">
+                <!-- 图片+搜索栏 -->
+                <v-card flat color="cyan darken-2">
+                    <v-img
+                            class="white--text align-end"
+                            height="280px"
+                            width="100%"
+                            min-width="300"
+                            color="darkgray"
+                    >
+                        <v-carousel
+                                style="top: 70px"
+                                cycle
+                                height="300"
+                                :show-arrows="false"
+                                hide-delimiter-background
+                                hide-delimiters
                         >
-                            <v-tabs-slider color="cyan darken-2"></v-tabs-slider>
-                            <v-tab
-                                    href="#tabs-1"
+                            <v-carousel-item :src="'http://5b0988e595225.cdn.sohucs.com/images/20180607/b9e8dd1a30df4d6ab7929af7b54af725.jpeg'">
+                            </v-carousel-item>
+                            <v-carousel-item
+                                    :src="'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2313524264,2445894105&fm=26&gp=0.jpg'"
                             >
-                                <v-icon>mdi-magnify</v-icon>
-                                搜索
-                            </v-tab>
-
-                            <v-tab
-                                    href="#tabs-2"
+                            </v-carousel-item>
+                            <v-carousel-item
+                                    :src="'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1270512280,2500363722&fm=26&gp=0.jpg'"
                             >
-                                <v-icon>mdi-message</v-icon>
-                                交流
-                            </v-tab>
+                            </v-carousel-item>
 
-                            <v-tab
-                                    href="#tabs-3"
+                        </v-carousel>
+                        <v-row justify="center">
+                            <v-spacer></v-spacer>
+                            <!-- 输入框 -->
+                            <v-col cols="8">
+                                <v-autocomplete
+                                        color="cyan darken-2"
+                                        background-color="white"
+                                        :items="searchList"
+                                        hide-details
+                                        prepend-inner-icon="mdi-magnify"
+                                        single-line
+                                        label="搜索部门或业务"
+                                        outlined
+                                        dense
+                                        id="info"
+                                        :filter="customFilter"
+                                ></v-autocomplete>
+                                <!--<label for="info"></label>
+                                <input
+                                        v-model="inputValue"
+                                        autofocus="autofocus"
+                                        autocomplete="off"
+                                        placeholder="搜索业务和部门"
+                                        class="new-todo ml-3"
+                                        id="info"
+                                />-->
+                            </v-col>
+                            <!-- 搜索按钮 -->
+                            <v-col cols="3">
+                                <v-btn id="btn1" color="cyan darken-2" @click="toSearchResult">
+                                    搜索
+                                </v-btn>
+                            </v-col>
+                            <v-spacer></v-spacer>
+                        </v-row>
+                    </v-img>
+                </v-card>
+
+                <!-- 部门卡片 -->
+                <v-card flat>
+                    <template>
+                        <v-card
+                                width="100%"
+                                class="mx-auto"
+                        >
+                            <v-app-bar
+                                    dark
+                                    color="cyan darken-2"
+                                    class="mb-1"
                             >
-                                <v-icon>mdi-account-box</v-icon>
-                                我的
-                            </v-tab>
-                        </v-tabs>
-                    </template>
-                </v-toolbar>
-
-                <!-- 内容页 -->
-                <v-tabs-items v-model="tabs">
-
-                    <!-- 搜索主界面 -->
-                    <v-tab-item value="tabs-1">
-                        <!-- 图片+搜索栏 -->
-                        <v-card flat>
-                            <!--<v-carousel
-                                    cycle
-                                    height="200"
-                                    hide-delimiter-background
-                                    :show-arrows="false"
-                                    hide-delimiters
-                            >
-                                <v-carousel-item>
-                                    <v-sheet
-                                            color="indigo"
-                                            height="100%"
-                                            style="background-image: url('https://i.picsum.photos/id/1075/1920/1080.jpg?hmac=XoHaZBtraAFA5A6u4sxS7Wg5mfE-F1RjIigrFXexwJY');"
-                                    >
-                                        <v-row
-                                                class="fill-height"
-                                                align="center"
-                                                justify="center"
-                                        >
-                                            <div class="display-3">
-                                                Wefive.government
-                                            </div>
-                                        </v-row>
-                                    </v-sheet>
-                                </v-carousel-item>
-                                <v-carousel-item>
-                                    <v-sheet
-                                            color="warning"
-                                            height="100%"
-                                            style="background-image: url('http://5b0988e595225.cdn.sohucs.com/images/20180607/b9e8dd1a30df4d6ab7929af7b54af725.jpeg');"
-                                    >
-                                        <v-row
-                                                class="fill-height"
-                                                align="center"
-                                                justify="center"
-                                        >
-                                            <div class="display-3">
-
-                                            </div>
-                                        </v-row>
-                                    </v-sheet>
-                                </v-carousel-item>
-                            </v-carousel>
-                            <v-row justify="center">
                                 <v-spacer></v-spacer>
-                                &lt;!&ndash; 输入框 &ndash;&gt;
-                                <v-col cols="8">
-                                    <v-autocomplete
-                                            color="cyan darken-2"
-                                            background-color="white"
-                                            :items="searchList"
-                                            hide-details
-                                            prepend-inner-icon="mdi-magnify"
-                                            single-line
-                                            label="搜索部门或业务"
-                                            outlined
-                                            dense
-                                            id="info"
-                                            :filter="customFilter"
-                                    ></v-autocomplete>
-                                    &lt;!&ndash;<label for="info"></label>
-                                    <input
-                                            v-model="inputValue"
-                                            autofocus="autofocus"
-                                            autocomplete="off"
-                                            placeholder="搜索业务和部门"
-                                            class="new-todo ml-3"
-                                            id="info"
-                                    />&ndash;&gt;
-                                </v-col>
-                                &lt;!&ndash; 搜索按钮 &ndash;&gt;
-                                <v-col cols="3">
-                                    <v-btn id="btn1" color="cyan darken-2" @click="toSearchResult">
-                                        搜索
-                                    </v-btn>
-                                </v-col>
+
+                                <v-toolbar-title>热搜部门和业务</v-toolbar-title>
+
                                 <v-spacer></v-spacer>
-                            </v-row>-->
-                            <v-img
-                                    class="white--text align-end"
-                                    height="280px"
-                                    width="100%"
-                                    min-width="300"
-                                    color="darkgray"
-                                    src="http://5b0988e595225.cdn.sohucs.com/images/20180607/b9e8dd1a30df4d6ab7929af7b54af725.jpeg"
-                            >
-                                <v-row justify="center">
-                                    <v-spacer></v-spacer>
-                                    <!-- 输入框 -->
-                                    <v-col cols="8">
-                                        <v-autocomplete
-                                                color="cyan darken-2"
-                                                background-color="white"
-                                                :items="searchList"
-                                                hide-details
-                                                prepend-inner-icon="mdi-magnify"
-                                                single-line
-                                                label="搜索部门或业务"
-                                                outlined
-                                                dense
-                                                id="info"
-                                                :filter="customFilter"
-                                        ></v-autocomplete>
-                                        <!--<label for="info"></label>
-                                        <input
-                                                v-model="inputValue"
-                                                autofocus="autofocus"
-                                                autocomplete="off"
-                                                placeholder="搜索业务和部门"
-                                                class="new-todo ml-3"
-                                                id="info"
-                                        />-->
-                                    </v-col>
-                                    <!-- 搜索按钮 -->
-                                    <v-col cols="3">
-                                        <v-btn id="btn1" color="cyan darken-2" @click="toSearchResult">
-                                            搜索
-                                        </v-btn>
-                                    </v-col>
-                                    <v-spacer></v-spacer>
-                                </v-row>
-                            </v-img>
-                        </v-card>
-                        <!-- 部门卡片 -->
-                        <v-card flat>
-                            <template>
-                                <v-card
-                                        width="100%"
-                                        class="mx-auto"
+                                <v-btn
+                                        color="white"
+                                        dark
+                                        text
+                                        fab
+                                        absolute
+                                        right
                                 >
-                                    <v-app-bar
-                                            dark
-                                            color="cyan darken-2"
-                                            class="mb-1"
-                                    >
-                                        <v-spacer></v-spacer>
+                                    <v-icon>mdi-magnify</v-icon>
+                                </v-btn>
+                            </v-app-bar>
 
-                                        <v-toolbar-title>热搜部门和业务</v-toolbar-title>
-
-                                        <v-spacer></v-spacer>
-                                        <v-btn
-                                                color="white"
-                                                dark
-                                                text
-                                                fab
-                                                absolute
-                                                right
-                                        >
-                                            <v-icon>mdi-magnify</v-icon>
-                                        </v-btn>
-                                    </v-app-bar>
-
-                                    <v-row dense>
-                                        <v-col
-                                                v-for="(item, i) in businesses"
-                                                :key="i"
-                                                cols="12"
-                                        >
-                                            <v-card flat :id="item.dept_id">
-                                                <div class="d-flex flex-no-wrap justify-space-between">
-                                                    <div>
-                                                        <v-card-title
-                                                                v-text="item.dept_name + '(' + item.bus_name + ')'"
-                                                        ></v-card-title>
-                                                        <v-card-subtitle v-text="item.location"></v-card-subtitle>
-
-                                                        <v-card-text>
-                                                            <div v-text="item.description"></div>
-                                                        </v-card-text>
-                                                    </div>
-
-                                                    <v-avatar
-                                                            class="ma-3"
-                                                            size="125"
-                                                            tile
-                                                            v-if="item.picture"
-                                                    >
-                                                        <v-img :src="item.picture"></v-img>
-                                                    </v-avatar>
-                                                </div>
-
-                                                <v-card-actions>
-                                                    <v-btn
-                                                            icon
-                                                            @click=" showDetail === i ? showDetail = -1 : showDetail = i "
-                                                    >
-                                                        <v-icon>{{ showDetail === i ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                                                    </v-btn>
-                                                    <v-spacer></v-spacer>
-                                                    <v-btn
-                                                            color="cyan darken-2"
-                                                            @click="toBusProcess"
-                                                            large
-                                                            dark
-                                                            width="180"
-                                                            :id="item.bus_id"
-                                                    >
-                                                        办理详情
-                                                    </v-btn>
-                                                </v-card-actions>
-                                                <v-expand-transition>
-                                                    <div v-show="showDetail === i">
-                                                        <v-chip outlined class="ma-1"><v-icon>mdi-clock</v-icon>{{item.work_time}}</v-chip>
-                                                        <v-chip outlined class="ma-1"><v-icon>mdi-phone</v-icon>{{item.phone}}</v-chip>
-                                                    </div>
-                                                </v-expand-transition>
-                                            </v-card>
-                                            <v-divider
-                                                    v-if="i < businesses.length - 1"
-                                                    :key="i"
-                                            ></v-divider>
-                                        </v-col>
-                                    </v-row>
-                                </v-card>
-                            </template>
-                        </v-card>
-                    </v-tab-item>
-
-                    <!-- 交流主界面 -->
-                    <v-tab-item value="tabs-2">
-                        <!-- 上半部分 -->
-                        <v-card flat>
-                            <!-- 筛选热门问题 -->
-                            <v-card-actions>
-                                <v-row class="mt-5">
-                                    <v-col cols="9">
-                                        <v-autocomplete
-                                                color="cyan darken-2"
-                                                :items="titles"
-                                                hide-details
-                                                prepend-inner-icon="mdi-magnify"
-                                                single-line
-                                                outlined
-                                                dense
-                                                value=""
-                                                id="chatFilter"
-                                                placeholder="搜索热门交流区"
-                                                :filter="customFilter"
-                                        ></v-autocomplete>
-                                    </v-col>
-                                    <v-col cols="2">
-                                        <v-btn
-                                                dark
-                                                color="cyan darken-2"
-                                                @click="toChatFiltered"
-                                        >
-                                            搜索
-                                        </v-btn>
-                                    </v-col>
-                                </v-row>
-                            </v-card-actions>
-
-                            <!-- 热门问题 -->
-                            <v-list two-line dense>
-                                <template v-for="(item, index) in hotSearch">
-                                    <v-list-item :key="item.title" >
-                                        <template>
-                                            <v-list-item-content>
-                                                <v-list-item-subtitle
-                                                        class="text--primary"
-                                                        v-text="item.headline"
-                                                ></v-list-item-subtitle>
-                                            </v-list-item-content>
-
-                                            <v-list-item-action>
-                                                <v-list-item-action-text v-text="item.hot_rate"></v-list-item-action-text>
-
-                                                <v-icon
-                                                        color="yellow darken-3"
-                                                >
-                                                    mdi-fire
-                                                </v-icon>
-                                            </v-list-item-action>
-                                        </template>
-                                    </v-list-item>
-
-                                    <v-divider
-                                            v-if="index < hotSearch.length - 1"
-                                            :key="index"
-                                    ></v-divider>
-                                </template>
-                            </v-list>
-                        </v-card>
-
-                        <!-- 下半部分 -->
-                        <v-card>
-                            <template>
-                                <v-card
-                                        width="100%"
-                                        class="mx-auto"
+                            <v-row dense>
+                                <v-col
+                                        v-for="(item, i) in businesses"
+                                        :key="i"
+                                        cols="12"
                                 >
+                                    <v-card flat :id="item.dept_id">
+                                        <div class="d-flex flex-no-wrap justify-space-between">
+                                            <div>
+                                                <v-card-title
+                                                        v-text="item.dept_name + '(' + item.bus_name + ')'"
+                                                ></v-card-title>
+                                                <v-card-subtitle v-text="item.location"></v-card-subtitle>
 
-                                    <v-app-bar
-                                            dark
-                                            color="cyan darken-2"
-                                            class="mb-1"
-                                    >
-                                        <v-spacer></v-spacer>
-
-                                        <v-toolbar-title>热门评论区</v-toolbar-title>
-
-                                        <v-spacer></v-spacer>
-
-                                        <v-btn icon @click="toNewChat">
-                                            <v-icon>
-                                                mdi-plus
-                                            </v-icon>
-                                        </v-btn>
-                                    </v-app-bar>
-                                    <v-row dense>
-                                        <v-col
-                                                v-for="(item, i) in chats"
-                                                :key="i"
-                                                cols="12"
-                                        >
-                                            <v-card flat @click="toChat" :id="item.chat_id">
-                                                <div class="d-flex flex-no-wrap justify-space-between">
-                                                    <div>
-                                                        <v-card-subtitle v-text="item.title"></v-card-subtitle>
-                                                        <v-card-text v-text="item.content"></v-card-text>
-                                                        <v-card-actions>
-                                                            <v-row>
-                                                                <v-col>
-                                                                    <v-icon>
-                                                                        mdi-heart-outline
-                                                                    </v-icon>
-                                                                    <span class="subheading mr-2">{{ item.likes }}</span>
-                                                                    <v-icon>
-                                                                        mdi-message-outline
-                                                                    </v-icon>
-                                                                    <span class="subheading mr-2">{{ item.discussions }}</span>
-                                                                </v-col>
-                                                            </v-row>
-
-                                                        </v-card-actions>
-                                                    </div>
-
-                                                    <v-avatar
-                                                            class="ma-3"
-                                                            size="125"
-                                                            tile
-                                                            v-if="item.picture && item.picture.length > 0"
-                                                    >
-                                                        <v-img :src="item.picture"></v-img>
-                                                    </v-avatar>
-                                                </div>
-                                                <v-divider
-                                                        v-if="i < chats.length - 1"
-                                                        :key="i"
-                                                ></v-divider>
-                                            </v-card>
-                                        </v-col>
-                                    </v-row>
-                                </v-card>
-                            </template>
-                        </v-card>
-
-                    </v-tab-item>
-
-                    <!-- 我的主界面 -->
-                    <v-tab-item value="tabs-3">
-                        <v-card flat>
-                            <template>
-                                <div v-if="flag === 1">
-                                    <div class="usercenter">
-                                        <div class="user-style">
-                                            <div class="userimg-style" >
-                                                <img v-bind:src="'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=201340457,3408503524&fm=26&gp=0.jpg'"/>
+                                                <v-card-text>
+                                                    <div v-text="item.description"></div>
+                                                </v-card-text>
                                             </div>
-                                            <div class="username-plus">
-                                                <span>{{user.name1}}</span>
-                                            </div>
-                                            <div class="btn-update">
-                                                <span v-on:click="flag = 2">修改</span>
-                                            </div>
+
+                                            <v-avatar
+                                                    class="ma-3"
+                                                    size="125"
+                                                    tile
+                                                    v-if="item.picture"
+                                            >
+                                                <v-img :src="item.picture"></v-img>
+                                            </v-avatar>
                                         </div>
 
-                                        <template>
-                                            <v-container fluid>
-                                                <v-row>
+                                        <v-card-actions>
+                                            <v-btn
+                                                    icon
+                                                    @click=" showDetail === i ? showDetail = -1 : showDetail = i "
+                                            >
+                                                <v-icon>{{ showDetail === i ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                                            </v-btn>
+                                            <v-spacer></v-spacer>
+                                            <v-btn
+                                                    color="cyan darken-2"
+                                                    @click="toBusProcess"
+                                                    large
+                                                    dark
+                                                    width="180"
+                                                    :id="item.bus_id"
+                                            >
+                                                办理详情
+                                            </v-btn>
+                                        </v-card-actions>
+                                        <v-expand-transition>
+                                            <div v-show="showDetail === i">
+                                                <v-chip outlined class="ma-1"><v-icon>mdi-clock</v-icon>{{item.work_time}}</v-chip>
+                                                <v-chip outlined class="ma-1"><v-icon>mdi-phone</v-icon>{{item.phone}}</v-chip>
+                                            </div>
+                                        </v-expand-transition>
+                                    </v-card>
+                                    <v-divider
+                                            v-if="i < businesses.length - 1"
+                                            :key="i"
+                                    ></v-divider>
+                                </v-col>
+                            </v-row>
+                        </v-card>
+                    </template>
+                </v-card>
+            </v-tab-item>
 
-                                                    <v-col
-                                                            :cols="12"
-                                                    >
-                                                        <v-card>
-                                                            <v-img
-                                                                    :src="'https://i.loli.net/2020/12/20/iZsuaYNU4cJd8C5.png'"
-                                                                    class="white--text align-end"
-                                                                    height="200px"
-                                                            >
-                                                            </v-img>
-                                                        </v-card>
-                                                    </v-col>
+            <!-- 交流主界面 -->
+            <v-tab-item value="tabs-2">
+                <!-- 上半部分 -->
+                <v-card>
+                    <!-- 筛选热门问题 -->
+                    <v-card-actions>
+                        <v-row class="mt-5">
+                            <v-col cols="9">
+                                <v-autocomplete
+                                        color="cyan darken-2"
+                                        :items="titles"
+                                        hide-details
+                                        prepend-inner-icon="mdi-magnify"
+                                        single-line
+                                        outlined
+                                        dense
+                                        value=""
+                                        id="chatFilter"
+                                        placeholder="搜索热门交流区"
+                                        :filter="customFilter"
+                                ></v-autocomplete>
+                            </v-col>
+                            <v-col cols="2">
+                                <v-btn
+                                        dark
+                                        color="cyan darken-2"
+                                        @click="toChatFiltered"
+                                >
+                                    搜索
+                                </v-btn>
+                            </v-col>
+                        </v-row>
+                    </v-card-actions>
 
-                                                    <v-col
-                                                            :cols="12"
+                    <!-- 热门问题 -->
+                    <v-list two-line dense>
+                        <template v-for="(item, index) in hotSearch">
+                            <v-list-item :key="item.title" >
+                                <template>
+                                    <v-list-item-content>
+                                        <v-list-item-subtitle
+                                                class="text--primary"
+                                                v-text="item.headline"
+                                        ></v-list-item-subtitle>
+                                    </v-list-item-content>
+
+                                    <v-list-item-action>
+                                        <v-list-item-action-text v-text="item.hot_rate"></v-list-item-action-text>
+
+                                        <v-icon
+                                                color="yellow darken-3"
+                                        >
+                                            mdi-fire
+                                        </v-icon>
+                                    </v-list-item-action>
+                                </template>
+                            </v-list-item>
+
+                            <v-divider
+                                    v-if="index < hotSearch.length - 1"
+                                    :key="index"
+                            ></v-divider>
+                        </template>
+                    </v-list>
+                </v-card>
+
+                <!-- 下半部分 -->
+                <v-card>
+                    <template>
+                        <v-card
+                                width="100%"
+                                class="mx-auto"
+                        >
+
+                            <v-app-bar
+                                    dark
+                                    color="cyan darken-2"
+                                    class="mb-1"
+                            >
+                                <v-spacer></v-spacer>
+
+                                <v-toolbar-title>热门评论区</v-toolbar-title>
+
+                                <v-spacer></v-spacer>
+
+                                <v-btn icon @click="toNewChat">
+                                    <v-icon>
+                                        mdi-plus
+                                    </v-icon>
+                                </v-btn>
+                            </v-app-bar>
+                            <v-row dense>
+                                <v-col
+                                        v-for="(item, i) in chats"
+                                        :key="i"
+                                        cols="12"
+                                >
+                                    <v-card flat @click="toChat" :id="item.chat_id">
+                                        <div class="d-flex flex-no-wrap justify-space-between">
+                                            <div>
+                                                <v-card-subtitle v-text="item.title"></v-card-subtitle>
+                                                <v-card-text v-text="item.content"></v-card-text>
+                                                <v-card-actions>
+                                                    <v-row>
+                                                        <v-col>
+                                                            <v-icon>
+                                                                mdi-heart-outline
+                                                            </v-icon>
+                                                            <span class="subheading mr-2">{{ item.likes }}</span>
+                                                            <v-icon>
+                                                                mdi-message-outline
+                                                            </v-icon>
+                                                            <span class="subheading mr-2">{{ item.discussions }}</span>
+                                                        </v-col>
+                                                    </v-row>
+
+                                                </v-card-actions>
+                                            </div>
+
+                                            <v-avatar
+                                                    class="ma-3"
+                                                    size="125"
+                                                    tile
+                                                    v-if="item.picture && item.picture.length > 0"
+                                            >
+                                                <v-img :src="item.picture"></v-img>
+                                            </v-avatar>
+                                        </div>
+                                        <v-divider
+                                                v-if="i < chats.length - 1"
+                                                :key="i"
+                                        ></v-divider>
+                                    </v-card>
+                                </v-col>
+                            </v-row>
+                        </v-card>
+                    </template>
+                </v-card>
+
+            </v-tab-item>
+
+            <!-- 我的主界面 -->
+            <v-tab-item value="tabs-3">
+                <v-card>
+                    <template>
+                        <div v-if="flag === 1">
+                            <div class="usercenter">
+                                <div class="user-style">
+                                    <div class="userimg-style" >
+                                        <img v-bind:src="'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=201340457,3408503524&fm=26&gp=0.jpg'"/>
+                                    </div>
+                                    <div class="username-plus">
+                                        <span>{{user.name1}}</span>
+                                    </div>
+                                    <div class="btn-update">
+                                        <span v-on:click="flag = 2">修改</span>
+                                    </div>
+                                </div>
+
+                                <template>
+                                    <v-container fluid>
+                                        <v-row>
+
+                                            <v-col
+                                                    :cols="12"
+                                            >
+                                                <v-card>
+                                                    <v-img
+                                                            :src="'https://i.loli.net/2020/12/20/iZsuaYNU4cJd8C5.png'"
+                                                            class="white--text align-end"
+                                                            height="200px"
                                                     >
-                                                        <v-card class="card">
+                                                    </v-img>
+                                                </v-card>
+                                            </v-col>
+
+                                            <v-col
+                                                    :cols="12"
+                                            >
+                                                <v-card class="card">
                                                             <span class="tit">
                                                                 我的信息
                                                             </span>
-                                                            <v-btn style="background-image: url('https://i.loli.net/2020/12/20/6CtLiIsGcjWkVgh.png');
+                                                    <v-btn style="background-image: url('https://i.loli.net/2020/12/20/6CtLiIsGcjWkVgh.png');
                           height: 45px; float: right; width: 10px"
-                                                                   @click="showInformation">
-                                                            </v-btn>
-                                                        </v-card>
-                                                    </v-col>
+                                                           @click="showInformation">
+                                                    </v-btn>
+                                                </v-card>
+                                            </v-col>
 
 
-                                                    <div class="mymess" v-show="flag2">
-                                                        <i class="fa fa-phone" aria-hidden="true"></i>
-                                                        &nbsp;&nbsp;电话<span>{{user.tel1}}</span>
-                                                    </div>
-                                                    <div class="mymess" v-show="flag2">
-                                                        <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                                                        &nbsp;&nbsp;身份证<span id="ID">{{user.cardId1}}</span>
-                                                    </div>
+                                            <div class="mymess" v-show="flag2">
+                                                <i class="fa fa-phone" aria-hidden="true"></i>
+                                                &nbsp;&nbsp;电话<span>{{user.tel1}}</span>
+                                            </div>
+                                            <div class="mymess" v-show="flag2">
+                                                <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                                                &nbsp;&nbsp;身份证<span id="ID">{{user.cardId1}}</span>
+                                            </div>
 
 
-                                                    <v-col
-                                                            :cols="12"
-                                                    >
-                                                        <v-card class="card">
+                                            <v-col
+                                                    :cols="12"
+                                            >
+                                                <v-card class="card">
                                                             <span class="tit">
                                                                 我的预约
                                                             </span>
-                                                            <v-btn style="background-image: url('https://i.loli.net/2020/12/20/6CtLiIsGcjWkVgh.png');
+                                                    <v-btn style="background-image: url('https://i.loli.net/2020/12/20/6CtLiIsGcjWkVgh.png');
                           height: 45px; float: right; width: 10px"
-                                                                   @click="showReserve === true ? showReserve = false : showReserve
+                                                           @click="showReserve === true ? showReserve = false : showReserve
                                                                    = true"
-                                                            >
-                                                            </v-btn>
-                                                        </v-card>
-                                                    </v-col>
-                                                    <!--这里写预约信息-->
-                                                    <div class="mymess" v-show="showReserve" v-for="(item,i) in
-                                                    myOrder" :key="i">
-                                                        &nbsp;&nbsp;{{item.deptName}}  {{item.order_day}}
-                                                        {{item.order_time}}
-                                                        <v-btn
-                                                                color="cyan darken-2"
-                                                                :id="item.dept_id"
-                                                                @click="cancelReserve"
-                                                                dark
-                                                                width="40"
-                                                                height="25"
-                                                                style="float: right"
-                                                        >
-                                                            取消
-                                                        </v-btn>
-                                                    </div>
-
-
-                                                    <v-col
-                                                            :cols="12"
                                                     >
-                                                        <v-card class="card">
+                                                    </v-btn>
+                                                </v-card>
+                                            </v-col>
+                                            <!--这里写预约信息-->
+                                            <div class="mymess" v-show="showReserve" v-for="(item,i) in
+                                                    myOrder" :key="i">
+                                                &nbsp;&nbsp;{{item.deptName}}  {{item.order_day}}
+                                                {{item.order_time}}
+                                                <v-btn
+                                                        color="cyan darken-2"
+                                                        :id="item.dept_id"
+                                                        @click="cancelReserve"
+                                                        dark
+                                                        width="40"
+                                                        height="25"
+                                                        style="float: right"
+                                                >
+                                                    取消
+                                                </v-btn>
+                                            </div>
+
+
+                                            <v-col
+                                                    :cols="12"
+                                            >
+                                                <v-card class="card">
                   <span class="tit">
                     关于我们
                   </span>
-                                                            <v-btn style="background-image: url('https://i.loli.net/2020/12/20/6CtLiIsGcjWkVgh.png');
+                                                    <v-btn style="background-image: url('https://i.loli.net/2020/12/20/6CtLiIsGcjWkVgh.png');
                           height: 45px; float: right; width: 10px"
-                                                            >
-                                                            </v-btn>
-                                                        </v-card>
-                                                    </v-col>
+                                                    >
+                                                    </v-btn>
+                                                </v-card>
+                                            </v-col>
 
-                                                </v-row>
-                                            </v-container>
-                                        </template>
-                                    </div>
+                                        </v-row>
+                                    </v-container>
+                                </template>
+                            </div>
+                        </div>
+
+
+                        <div v-else-if="flag === 2" class="form">
+                            <div class="usercenter">
+                                <div class="user-style">
+                                    <div class="userimg-style"><img v-bind:src="'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=201340457,3408503524&fm=26&gp=0.jpg' + user.icon"/></div>
+                                    <div class="username-plus"><span>{{user.name1}}</span></div>
+                                    <div class="btn-update"><span v-on:click="flag = 1">取消</span></div>
                                 </div>
-
-
-                                <div v-else-if="flag === 2" class="form">
-                                    <div class="usercenter">
-                                        <div class="user-style">
-                                            <div class="userimg-style"><img v-bind:src="'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=201340457,3408503524&fm=26&gp=0.jpg' + user.icon"/></div>
-                                            <div class="username-plus"><span>{{user.name1}}</span></div>
-                                            <div class="btn-update"><span v-on:click="flag = 1">取消</span></div>
-                                        </div>
-                                    </div>
-                                    <div class="input-control" style="margin-top:50px">
-                                        <input id="name" type="text" name="username" v-model="user.name1" placeholder="昵称"/>
-                                    </div>
-                                    <div class="input-control">
-                                        <input id="password" type="text" name="username" v-model="user.password1" placeholder="请输入新的密码" />
-                                    </div>
-                                    <div class="input-control">
-                                        <input id="phone" type="text" name="username" v-model="user.tel1" placeholder="电话" />
-                                    </div>
-                                    <div class="input-control">
-                                        <input id="cardId" type="text" name="username" v-model="user.cardId1" placeholder="身份证号" />
-                                    </div>
-                                    <div class="button-control">
-                                        <input type="button" name="submit" value="提交" v-on:click="submit"/>
-                                    </div>
+                            </div>
+                            <div class="input-control" style="margin-top:50px">
+                                <input id="name" type="text" name="username" v-model="user.name1" placeholder="昵称"/>
+                            </div>
+                            <div class="input-control">
+                                <input id="password" type="text" name="username" v-model="user.password1" placeholder="请输入新的密码" />
+                            </div>
+                            <div class="input-control">
+                                <input id="phone" type="text" name="username" v-model="user.tel1" placeholder="电话" />
+                            </div>
+                            <div class="input-control">
+                                <input id="cardId" type="text" name="username" v-model="user.cardId1" placeholder="身份证号" />
+                            </div>
+                            <div class="button-control">
+                                <input type="button" name="submit" value="提交" v-on:click="submit"/>
+                            </div>
 
 
 
-                                </div>
+                        </div>
 
-                            </template>
-                        </v-card>
-                    </v-tab-item>
+                    </template>
+                </v-card>
+            </v-tab-item>
 
-
-                </v-tabs-items>
-
-            </v-card>
-        </v-row>
+        </v-tabs-items>
         <v-snackbar
                 v-model="isEmpty"
                 :timeout="2000"
@@ -702,7 +638,7 @@
                         this.businesses = res.data.data.businesses;
                         this.busList = new Array(this.businesses.length);
                         this.deptList = new Array(this.businesses.length);
-                        this.searchList = new Array(this.businesses.length*2);
+                        this.searchList = new Array(this.businesses.length*2 + 2);
                         let j = 0;
                         for (let i = 0; i < this.businesses.length; i++) {
                             this.busList[i] = this.businesses[i].bus_name;
@@ -710,6 +646,8 @@
                             this.searchList[j++] = this.deptList[i];
                             this.searchList[j++] = this.busList[i];
                         }
+                        this.searchList[j++] = "民政局";
+                        this.searchList[j] = "公安局";
                         /*this.searchList = new Array(this.busList.length + this.deptList.length);
                         for (let i = 0; i < this.busList.length; i++) {
                             this.searchList.concat(this.busList[i]);

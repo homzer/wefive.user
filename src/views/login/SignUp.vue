@@ -1,63 +1,68 @@
 <template>
-  <div class="big-box">
-    <div class="big-contain" >
-      <div class="btitle">注册账户</div>
+  <v-row justify="center">
+    <v-card width="400" class="mt-8" height="660">
+      <v-card width="260" flat class="mx-auto mt-8">
+        <div class="text-center btitle">
+          注册账户
+        </div>
+        <v-form v-model="valid" class="mt-8">
 
-      <v-form v-model="valid" class="mt-8">
+          <v-text-field
+                  autocomplete="off"
+                  placeholder="用户名"
+                  outlined
+                  value=""
+                  id="name"
+                  dense
+                  single-line
+                  :rules="nameRules"
+          ></v-text-field>
 
-        <v-text-field
-                autocomplete="off"
-                placeholder="用户名"
-                outlined
-                value=""
-                id="name"
-                dense
-                single-line
-                :rules="nameRules"
-        ></v-text-field>
+          <v-text-field
+                  autocomplete="off"
+                  placeholder="电话号码"
+                  outlined
+                  value=""
+                  id="phone"
+                  dense
+                  single-line
+                  :rules="phoneRules"
+          ></v-text-field>
 
-        <v-text-field
-                autocomplete="off"
-                placeholder="电话号码"
-                outlined
-                value=""
-                id="phone"
-                dense
-                single-line
-                :rules="phoneRules"
-        ></v-text-field>
+          <v-text-field
+                  autocomplete="off"
+                  placeholder="密码"
+                  :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                  :rules="passwordRules"
+                  :type="show ? 'text' : 'password'"
+                  name="password"
+                  id="password"
+                  value=""
+                  @click:append="show = !show"
+                  single-line
+                  outlined
+                  dense
+          ></v-text-field>
 
-        <v-text-field
-                autocomplete="off"
-                placeholder="密码"
-                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                :rules="passwordRules"
-                :type="show ? 'text' : 'password'"
-                name="password"
-                id="password"
-                value=""
-                @click:append="show = !show"
-                single-line
-                outlined
-                dense
-        ></v-text-field>
+          <v-text-field
+                  autocomplete="off"
+                  placeholder="身份证号码"
+                  outlined
+                  value=""
+                  id="cardId"
+                  dense
+                  single-line
+                  :rules="cardIdRules"
+          ></v-text-field>
+        </v-form>
+        <v-btn rounded color="cyan darken-2" width="100%" class="my-5" dark @click="sendRegisterInfo()">注册</v-btn>
+        <v-btn rounded color="cyan darken-2" width="100%" class="my-5" dark @click="back">返回</v-btn>
+      </v-card>
 
-        <v-text-field
-                autocomplete="off"
-                placeholder="身份证号码"
-                outlined
-                value=""
-                id="cardId"
-                dense
-                single-line
-                :rules="cardIdRules"
-        ></v-text-field>
-      </v-form>
-      <!--<button class="bbutton" @click="sendRegisterInfo()">注册</button>-->
-      <v-btn rounded color="cyan darken-2" width="50%" max-width="220" class="my-5" dark @click="sendRegisterInfo()">注册</v-btn>
-      <v-btn rounded color="cyan darken-2" width="50%" max-width="220" class="my-5" dark @click="back">返回</v-btn>
-    </div>
-  </div>
+    </v-card>
+
+  </v-row>
+
 </template>
 
 <script>
@@ -68,6 +73,7 @@
     data () {
       return {
         valid: false,
+        show: false,
         phoneRules: [
           v => !!v || '电话号码不能为空',
           v => v.length === 11 || '电话号码长度不对',
@@ -133,6 +139,7 @@
   .btitle{
     font-size: 2.0em;
     font-weight: bold;
+    margin-top: 80px;
     color: rgb(57,167,176);
   }
   .bform{

@@ -9,7 +9,7 @@
             <v-spacer></v-spacer>
         </v-toolbar>
         <!-- 标题区 -->
-        <v-card flat>
+        <v-card flat class="ma-3">
             <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                     <v-avatar color="cyan darken-2" class="mt-2" size="35">
@@ -56,7 +56,7 @@
 
         <v-divider color="black"></v-divider>
         <!-- 留言区 -->
-        <v-card flat class="mt-6">
+        <v-card flat class="mt-3 ma-3">
             <v-row>
                 <v-col cols="9">
                     <v-textarea
@@ -126,6 +126,7 @@
                 </v-col>
             </v-row>
         </v-card>
+
     </v-container>
 </template>
 
